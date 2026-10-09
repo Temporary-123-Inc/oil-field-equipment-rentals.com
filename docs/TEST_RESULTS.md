@@ -1,5 +1,14 @@
 # TemporaryKitchenRental Test Results
 
+## 2026-10-09 — Direct state/city route fallback
+
+- Root cause — CONFIRMED: client-side clicks worked, but direct production requests to `/service-areas/.../` returned Vercel `NOT_FOUND` because the catch-all rewrite used `/:path* -> /index.html`.
+- Fix — PASS: `vercel.json` now uses `/(.*) -> /`, preserving the existing redirect table and client-side routes.
+- Local direct-route smoke test — PASS: local preview returns HTTP 200 and the app shell for Georgia, Savannah, and the service-area hub paths.
+- Protected Vercel direct-route smoke test — PASS: `vercel curl` returns the Vite app shell for `/service-areas/georgia/`, `/service-areas/georgia/savannah/`, and `/service-areas/florida/key-west/` on deployment `dpl_76dp3aAcXK8n3KkMRsritR4VdXX6`.
+- `npm run build` — PASS: Vite production build completed; existing large-client-chunk warning remains.
+- Deployment — PASS: Vercel production deployment is Ready. The custom domain still routes through the existing Cloudflare challenge until DNS is changed to Vercel; that boundary is not a route-fallback failure.
+
 ## 2026-10-09 — GitHub/Vercel deployment
 
 - GitHub repository — PASS: public `https://github.com/Temporary-123-Inc/oil-field-equipment-rentals.com` exists under the requested organization, default branch is `main`, and `git ls-remote` confirms deployed source commit `ef4f8fd`.

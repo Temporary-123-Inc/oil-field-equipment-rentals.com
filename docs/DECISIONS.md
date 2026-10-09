@@ -1,5 +1,11 @@
 # TemporaryKitchenRental Decision Log
 
+## 2026-10-09 — Use a root SPA rewrite for direct location links
+
+- Keep the state-directory and modal city links as normal anchors so Ctrl/Cmd-click, copy-link, and client-side navigation all use the same canonical URL.
+- Use Vercel's standard `/(.*) -> /` rewrite for the Vite SPA. The previous `/:path* -> /index.html` rule produced production `NOT_FOUND` responses for direct state/city requests even though in-app navigation worked.
+- Preserve the existing redirects before the fallback. Verify direct routes through the protected deployment URL; do not treat the external Cloudflare challenge as evidence of a route failure until the domain DNS cutover is complete.
+
 ## 2026-10-09 — Create the requested GitHub/Vercel deployment target
 
 - Create the public GitHub repository `Temporary-123-Inc/oil-field-equipment-rentals.com` and keep `main` as the source branch.
