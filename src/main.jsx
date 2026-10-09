@@ -218,6 +218,122 @@ const regionsForState = (state) => (regionCities[state] || []).map((cities, inde
   cities,
 }));
 const cityRecordFor = (state, city) => cityRecords.find((record) => record.state === state && slugify(record.representative_city) === slugify(city)) || cityRecords.find((record) => record.page_layout_data?.slug === city);
+
+const siteOrigin = 'https://oil-field-equipment-rentals.com';
+const siteName = 'Oil Field Equipment Rentals';
+const defaultSeoDescription = 'Oil Field Equipment Rentals provides commercial remote mancamp facility rentals for construction, renovation, industrial, infrastructure, and emergency-response sites.';
+const normalizePath = (path) => (path === '/' || path.endsWith('/') ? path : `${path}/`);
+const coreRoutes = new Set(['/', '/services/', '/mancamp/', '/basecamp/', '/service-areas/', '/locations/', '/rental-calculator/', '/about-us/', '/blog/', '/contact-us/', '/contact/', '/privacy/', '/inventory/', '/equipment-rental/']);
+const serviceBySlug = Object.fromEntries(services.map((service) => [service.slug, service]));
+
+const canonicalPathFor = (rawPath) => {
+  const path = normalizePath(rawPath);
+  if (path === '/basecamp/') return '/mancamp/';
+  if (path === '/locations/') return '/service-areas/';
+  if (path === '/inventory/' || path === '/equipment-rental/') return '/services/';
+  if (path === '/contact/') return '/contact-us/';
+  if (referenceDetailForPath(path)) return normalizePath(referenceRouteAliases[path] || path);
+  if (inventoryRouteMap[path]) return `/services/${inventoryRouteMap[path]}/`;
+  return path;
+};
+
+const isKnownRoute = (rawPath) => {
+  const path = normalizePath(rawPath);
+  if (coreRoutes.has(path) || referenceDetailForPath(path) || inventoryRouteMap[path]) return true;
+  const parts = path.split('/').filter(Boolean);
+  if (parts[0] === 'services' && parts.length === 2) return Boolean(serviceBySlug[parts[1]]);
+  if (parts[0] !== 'service-areas') return false;
+  const state = stateNames.find((name) => slugify(name) === parts[1]);
+  if (!state || parts.length > 3) return false;
+  return parts.length === 2 || Boolean(cityRecordFor(state, parts[2]));
+};
+
+const seoTitleForPath = (rawPath) => {
+  const path = normalizePath(rawPath);
+  const canonical = canonicalPathFor(path);
+  if (path === '/') return 'Commercial Remote Mancamp Facility Rentals | Oil Field Equipment Rentals';
+  if (canonical === '/mancamp/') return 'Remote Mancamp Facility Rental Packages | Oil Field Equipment Rentals';
+  if (canonical === '/services/') return 'Mobile Facility and Trailer Rentals | Oil Field Equipment Rentals';
+  if (canonical === '/service-areas/') return 'Remote Mancamp Facility Rentals by State | Oil Field Equipment Rentals';
+  if (canonical === '/rental-calculator/') return 'Remote Mancamp Rental Estimate | Oil Field Equipment Rentals';
+  if (canonical === '/about-us/') return 'About Oil Field Equipment Rentals | Remote Facility Rentals';
+  if (canonical === '/blog/') return 'Remote Mancamp Rental Planning Articles | Oil Field Equipment Rentals';
+  if (canonical === '/contact-us/') return 'Request a Remote Mancamp Rental Quote | Oil Field Equipment Rentals';
+  if (canonical === '/privacy/') return 'Privacy Notice | Oil Field Equipment Rentals';
+  const detail = referenceDetailForPath(path);
+  if (detail) return `${referenceProductHeadline(detail.name)} | Oil Field Equipment Rentals`;
+  const parts = canonical.split('/').filter(Boolean);
+  if (parts[0] === 'services' && parts.length === 2 && serviceH1[parts[1]]) return `${serviceH1[parts[1]]} | Oil Field Equipment Rentals`;
+  if (parts[0] === 'service-areas') {
+    const state = stateNames.find((name) => slugify(name) === parts[1]);
+    const record = state && parts[2] ? cityRecordFor(state, parts[2]) : undefined;
+    if (record) return `Temporary Remote Mancamp Facility Rentals in ${record.representative_city}, ${state} | Oil Field Equipment Rentals`;
+    if (state) return `Temporary Remote Mancamp Facility Rentals in ${state} | Oil Field Equipment Rentals`;
+  }
+  return isKnownRoute(path) ? `${document.querySelector('main h1')?.textContent.trim() || siteName} | ${siteName}` : `Page Not Found | ${siteName}`;
+};
+
+const shortenDescription = (text) => {
+  const clean = (text || '').replace(/\s+/g, ' ').trim();
+  if (clean.length <= 158) return clean;
+  return `${clean.slice(0, 155).replace(/\s+\S*$/, '')}…`;
+};
+
+const upsertMeta = (attribute, key, content) => {
+  let element = [...document.head.querySelectorAll('meta')].find((candidate) => candidate.getAttribute(attribute) === key);
+  if (!element) {
+    element = document.createElement('meta');
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.setAttribute('content', content);
+};
+
+const upsertLink = (rel, href) => {
+  let element = document.head.querySelector(`link[rel="${rel}"]`);
+  if (!element) {
+    element = document.createElement('link');
+    element.setAttribute('rel', rel);
+    document.head.appendChild(element);
+  }
+  element.setAttribute('href', href);
+};
+
+const updateSeo = (rawPath) => {
+  const path = normalizePath(rawPath);
+  const canonicalPath = canonicalPathFor(path);
+  const known = isKnownRoute(path);
+  const title = seoTitleForPath(path);
+  const h1 = document.querySelector('main h1');
+  const lead = h1?.parentElement?.querySelector('p') || document.querySelector('main p');
+  const description = shortenDescription(lead?.textContent || defaultSeoDescription);
+  const canonical = `${siteOrigin}${canonicalPath}`;
+  document.title = title;
+  upsertMeta('name', 'description', description);
+  upsertMeta('name', 'robots', known ? 'index,follow' : 'noindex,follow');
+  upsertMeta('property', 'og:type', 'website');
+  upsertMeta('property', 'og:site_name', siteName);
+  upsertMeta('property', 'og:title', title);
+  upsertMeta('property', 'og:description', description);
+  upsertMeta('property', 'og:url', canonical);
+  upsertMeta('property', 'og:image', `${siteOrigin}/oil-field-equipment-rentals-logo.svg`);
+  upsertMeta('name', 'twitter:card', 'summary');
+  upsertMeta('name', 'twitter:title', title);
+  upsertMeta('name', 'twitter:description', description);
+  upsertMeta('name', 'twitter:image', `${siteOrigin}/oil-field-equipment-rentals-logo.svg`);
+  upsertLink('canonical', canonical);
+
+  const breadcrumbLabels = canonicalPath.split('/').filter(Boolean).map((part) => part.replaceAll('-', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()));
+  const breadcrumb = breadcrumbLabels.length ? [{ '@type': 'ListItem', position: 1, name: 'Home', item: siteOrigin + '/' }, ...breadcrumbLabels.map((label, index) => ({ '@type': 'ListItem', position: index + 2, name: label, item: `${siteOrigin}/${canonicalPath.split('/').filter(Boolean).slice(0, index + 1).join('/')}/` }))] : [];
+  const graph = [{ '@type': 'Organization', '@id': `${siteOrigin}/#organization`, name: siteName, url: siteOrigin, logo: `${siteOrigin}/oil-field-equipment-rentals-logo.svg`, telephone: '+1-888-385-5513', contactPoint: [{ '@type': 'ContactPoint', telephone: '+1-888-385-5513', contactType: 'customer service' }] }, { '@type': 'WebSite', '@id': `${siteOrigin}/#website`, name: siteName, url: siteOrigin, publisher: { '@id': `${siteOrigin}/#organization` } }];
+  if (known && breadcrumb.length) graph.push({ '@type': 'BreadcrumbList', itemListElement: breadcrumb });
+  const detail = referenceDetailForPath(path);
+  const parts = canonicalPath.split('/').filter(Boolean);
+  if (known && (parts[0] === 'services' || detail)) graph.push({ '@type': 'Service', name: h1?.textContent.trim() || title, serviceType: 'Equipment rental', provider: { '@id': `${siteOrigin}/#organization` }, url: canonical, description });
+  let jsonLd = document.head.querySelector('#oil-field-jsonld');
+  if (!jsonLd) { jsonLd = document.createElement('script'); jsonLd.id = 'oil-field-jsonld'; jsonLd.type = 'application/ld+json'; document.head.appendChild(jsonLd); }
+  jsonLd.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+};
 const locationsForState = (state) => cityRecords
   .filter((record) => record.state === state)
   .map((record) => record.representative_city)
@@ -300,7 +416,7 @@ function Footer() {
   return <footer className="footer-band"><Shell className="footer-grid">
     <div><Link href="/" className="footer-brand"><img src="/oil-field-equipment-rentals-logo-dark.svg" alt="Oil Field Equipment Rentals" /></Link><p>Commercial remote mancamp facility rentals for construction, renovation, industrial, emergency-response, and other high-headcount sites.</p></div>
     <div><Eyebrow>Explore</Eyebrow><Link href="/mancamp/">Mancamp package</Link><Link href="/services/">Inventory components</Link><Link href="/service-areas/">Service areas</Link><Link href="/rental-calculator/">Package estimator</Link></div>
-    <div><Eyebrow>Plan</Eyebrow><Link href="/about-us/">Rental process</Link><Link href="/contact-us/">Request availability</Link><Link href="/blog/">Articles</Link></div>
+    <div><Eyebrow>Plan</Eyebrow><Link href="/about-us/">Rental process</Link><Link href="/contact-us/">Request availability</Link><Link href="/blog/">Articles</Link><Link href="/privacy/">Privacy notice</Link></div>
     <div><Eyebrow>Call us</Eyebrow><a className="footer-phone" href={phoneHref}>{phone}</a><p>Pricing, route timing, site fit, configuration, and final availability are confirmed through the company quote.</p></div>
   </Shell><div className="copyright"><Shell>© 2026 Oil Field Equipment Rentals. All rights reserved.</Shell></div></footer>;
 }
@@ -562,12 +678,19 @@ function BlogPage({ onContact }) { const articles = site.site_identity_articles 
 
 function ContactPage() { return <><PageIntro eyebrow="Contact us" title="Start a temporary remote workforce facility rental plan." text="Tell us the site, workforce, schedule, access, utilities, and functions that must stay online. The rental team can shape the next step around the eight-component package." /><section className="section contact-page-band"><Shell className="contact-page-grid"><div><Eyebrow>24/7 rental support</Eyebrow><h2>One point of contact for the whole site.</h2><p>Use the form to send the basics, or call directly for urgent planning.</p><a className="phone-line large" href={phoneHref}><Phone size={17} /> {phone} <span>Available 24/7</span></a></div><ContactForm /></Shell></section></>; }
 
+function PrivacyPage() {
+  return <><PageIntro eyebrow="Privacy notice" title="How rental inquiry details are used." text="Oil Field Equipment Rentals uses information you choose to send through its contact and estimate forms to understand your project and respond about temporary facility rental planning." /><section className="section privacy-band"><Shell className="two-column"><div><Eyebrow>Information you submit</Eyebrow><h2>Send only what is needed for the rental conversation.</h2><p>Project location, workforce details, dates, access conditions, utilities, contact information, and other planning notes may be used to prepare a response about your requested rental.</p></div><div><Eyebrow>Questions about your request</Eyebrow><h2>Call the rental team directly.</h2><p>For questions about information you submitted, call <a href={phoneHref}>{phone}</a>. Final availability, pricing, routing, and site requirements are confirmed through the company quote.</p></div></Shell></section></>;
+}
+
+function NotFound() {
+  return <><PageIntro eyebrow="404 · Page not found" title="This route is not in the published plan." text="The page you requested could not be found. Return to the service-area directory or browse the current rental inventory." /><section className="section"><Shell><Link className="button button-blue" href="/service-areas/">Browse service areas <ArrowRight size={16} /></Link></Shell></section></>;
+}
+
 function App() {
   const [path, setPath] = useState(window.location.pathname);
   const [stateModal, setStateModal] = useState(null);
   const [contactOpen, setContactOpen] = useState(false);
   useEffect(() => { const onPop = () => setPath(window.location.pathname); window.addEventListener('popstate', onPop); return () => window.removeEventListener('popstate', onPop); }, []);
-  useEffect(() => { document.title = path === '/' ? 'Oil Field Equipment Rentals | Mobile Facilities' : `${path.split('/').filter(Boolean).at(-1)?.replaceAll('-', ' ') || 'Oil Field Equipment Rentals'} | Oil Field Equipment Rentals`; }, [path]);
   const pathParts = path.split('/').filter(Boolean);
   const referenceDetail = referenceDetailForPath(path);
   let page;
@@ -577,15 +700,17 @@ function App() {
   else if (path === '/mancamp/' || path === '/basecamp/') page = <MancampPage onContact={() => setContactOpen(true)} />;
   else if (inventoryRouteMap[path] === 'services') page = <ServicesPage onContact={() => setContactOpen(true)} />;
   else if (inventoryRouteMap[path]) page = <InventoryCategoryPage slug={inventoryRouteMap[path]} onContact={() => setContactOpen(true)} />;
-  else if (pathParts[0] === 'services') page = <InventoryCategoryPage slug={pathParts[1]} onContact={() => setContactOpen(true)} />;
+  else if (pathParts[0] === 'services' && pathParts.length === 2 && serviceBySlug[pathParts[1]]) page = <InventoryCategoryPage slug={pathParts[1]} onContact={() => setContactOpen(true)} />;
   else if (path === '/service-areas/' || path === '/locations/') page = <ServiceAreasPage onStateClick={setStateModal} onContact={() => setContactOpen(true)} />;
-  else if (pathParts[0] === 'service-areas' && pathParts.length === 2) page = <StatePage state={stateNames.find((name) => slugify(name) === pathParts[1]) || pathParts[1].replaceAll('-', ' ')} onStateClick={setStateModal} onContact={() => setContactOpen(true)} />;
-  else if (pathParts[0] === 'service-areas' && pathParts.length >= 3) page = <CityPage state={stateNames.find((name) => slugify(name) === pathParts[1]) || pathParts[1].replaceAll('-', ' ')} city={pathParts[2]} onContact={() => setContactOpen(true)} />;
+  else if (pathParts[0] === 'service-areas' && pathParts.length === 2 && stateNames.some((name) => slugify(name) === pathParts[1])) page = <StatePage state={stateNames.find((name) => slugify(name) === pathParts[1])} onStateClick={setStateModal} onContact={() => setContactOpen(true)} />;
+  else if (pathParts[0] === 'service-areas' && pathParts.length === 3 && stateNames.some((name) => slugify(name) === pathParts[1]) && cityRecordFor(stateNames.find((name) => slugify(name) === pathParts[1]), pathParts[2])) page = <CityPage state={stateNames.find((name) => slugify(name) === pathParts[1])} city={pathParts[2]} onContact={() => setContactOpen(true)} />;
   else if (path === '/rental-calculator/') page = <CalculatorPage onContact={() => setContactOpen(true)} />;
   else if (path === '/about-us/') page = <AboutPage onContact={() => setContactOpen(true)} />;
   else if (path === '/blog/') page = <BlogPage onContact={() => setContactOpen(true)} />;
   else if (path === '/contact-us/' || path === '/contact/') page = <ContactPage />;
-  else page = <Home onStateClick={setStateModal} onContact={() => setContactOpen(true)} />;
+  else if (path === '/privacy/') page = <PrivacyPage />;
+  else page = <NotFound />;
+  useEffect(() => { updateSeo(path); }, [path]);
   return <><Header onContact={() => setContactOpen(true)} /><main>{page}</main><Footer /><button className="fixed-contact" type="button" onClick={() => setContactOpen(true)}><span>Need equipment?</span><strong>Talk to us</strong></button><a className="fixed-call" href={phoneHref}><Phone size={18} aria-hidden="true" /><span>24/7 rental help</span><strong>Call us</strong></a>{stateModal && <StateModal state={stateModal} onClose={() => setStateModal(null)} onContact={() => { setStateModal(null); setContactOpen(true); }} />}{contactOpen && <ContactModal onClose={() => setContactOpen(false)} />}</>;
 }
 

@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
+    "build": "node scripts/generate-oil-field-sitemap.mjs && vite build && node scripts/generate-spa-route-shells.mjs",
+    "preview": "vite preview --host 0.0.0.0",
+    "seo:sitemap": "node scripts/generate-oil-field-sitemap.mjs"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.2.5",
