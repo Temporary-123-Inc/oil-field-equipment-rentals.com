@@ -1255,3 +1255,10 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - Responsive visual review found and fixed the dark inventory-planning heading contrast issue. No additional horizontal overflow, off-viewport fixed widget, or persistent grid/sticky collision was observed in the sampled routes.
 - Deployment — PASS: commit `4960762` pushed to `Temporary-123-Inc/oil-field-equipment-rentals.com` main; Vercel project inspection confirmed `temporary-124/oil-field-equipment-rentals.com`; production deployment `dpl_At4VLB131su14rPVwt2hV87fxSjy` reached Ready at `https://oil-field-equipment-rentals-icyrrz1cy-temporary-124.vercel.app` and was aliased to `https://oil-field-equipment-rentals.com`. Protected `vercel curl` returned the app shell for `/`, `/service-areas/georgia/`, `/service-areas/georgia/savannah/`, `/services/mobile-kitchen-trailers/`, `/rental-calculator/`, and `/contact-us/`. `vercel logs --since 1h --level error` returned no logs. Browser interaction verification after deployment is bounded by Vercel Authentication; equivalent local production-build browser checks passed before deployment.
 
+## 2026-10-09 — Standalone headline width refinement
+
+- `git diff --check` — PASS.
+- `npm run build` — PASS; Vite production build completed with the existing large-client-chunk warning.
+- Visual review — PASS: 1440 px full-page Mancamp and Services captures show standalone page-intro and CTA headlines using the available width; 390 px Mancamp capture remains readable and has no intentional overflow. Paired two-column headings retain their composition.
+- Deployment — pending production redeploy.
+

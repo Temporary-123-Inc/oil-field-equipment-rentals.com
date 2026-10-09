@@ -762,3 +762,8 @@ The supplied restroom-only interior set may appear on the registered 12 ft, 14 f
 - Dark section headings require an explicit light color when the global section-heading rule sets a dark brand color. The inventory equipment-plan heading is scoped accordingly.
 - Responsive verification for this site includes at least 390 px and 768 px widths, plus the current 948 px preview and a wide desktop sample; zero horizontal overflow is required on representative routes.
 
+## 2026-10-09 — Use full-width display headings only in standalone sections
+
+- Standalone page-intro and CTA sections should let the display heading use the available content width, with balanced wrapping, when no right-side module is present.
+- Keep narrow display caps in hero, process, calculator, contact, case-study, and other paired layouts where the empty-looking space is intentionally occupied by a visual, form, list, or source panel.
+
