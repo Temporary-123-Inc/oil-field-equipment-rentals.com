@@ -772,3 +772,10 @@ The supplied restroom-only interior set may appear on the registered 12 ft, 14 f
 - When a layout collapses to one column below 860px, display headings in the collapsed content flow must use the available width rather than retaining desktop `ch` caps. This prevents case-study, calculator, contact, modal, process, and CTA headlines from forming tall left-side stacks with unused space on the right.
 - Preserve the desktop caps while paired modules remain side by side; this is a responsive layout rule, not a blanket removal of display-heading hierarchy.
 
+## 2026-10-10 — Canonical route metadata and true deep-link behavior
+
+- Keep route-aware SEO metadata in the client application, and pair it with generated static shells for every released route because this repository is a Vite SPA and direct requests need a file-backed route before JavaScript runs.
+- The official sitemap contains only current canonical routes. `/basecamp/` remains a supported legacy alias but permanently redirects/canonicalizes to the preferred `/mancamp/` route; the same consolidation rule applies to the approved legacy location, inventory, equipment-rental, contact, and historical location aliases.
+- Remove the blanket Vercel SPA rewrite. Valid deep links are materialized during the build, while unknown direct URLs must return Vercel 404 instead of rendering the homepage as a soft 404.
+- Use Organization/WebSite/BreadcrumbList/Service JSON-LD only where the page has corresponding first-party content. Do not invent an address or email absent from the verified live source; keep the corrected phone `+1-888-385-5513` as the authoritative contact value.
+
