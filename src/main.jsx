@@ -261,7 +261,14 @@ function Header({ onContact }) {
       inventoryCloseTimer.current = null;
     }, 500);
   };
-  useEffect(() => () => { if (inventoryCloseTimer.current) window.clearTimeout(inventoryCloseTimer.current); }, []);
+  useEffect(() => {
+    const closeInventoryOnScroll = () => setInventoryOpen(false);
+    window.addEventListener('scroll', closeInventoryOnScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', closeInventoryOnScroll);
+      if (inventoryCloseTimer.current) window.clearTimeout(inventoryCloseTimer.current);
+    };
+  }, []);
   useEffect(() => setMenuOpen(false), [window.location.pathname]);
   return <>
     <header className="site-header">

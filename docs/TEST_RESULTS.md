@@ -1246,3 +1246,12 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - `npm run build` — PASS: Vite production build completed successfully; existing large-client-chunk warning remains.
 - Deployment — NOT PERFORMED.
 
+## 2026-10-09 — Sitewide UI glitch audit
+
+- `git diff --check` — PASS.
+- `npm run build` — PASS; Vite production build completed with the existing large-client-chunk warning.
+- Responsive Chrome checks — PASS at 390×844, 768×960, 948×960, and 1440×900 for representative homepage, mobile-kitchen inventory, Savannah city, calculator, contact, and mobile-kitchen detail routes. `document.documentElement.scrollWidth - clientWidth` was `0` for every sampled route and viewport.
+- Interaction checks — PASS: mobile navigation opens; inventory submenu opens on click, closes on scroll, and stays inside the viewport; contact modal fits within a 390×844 viewport; state modal content scrolls beneath its sticky header; carousel arrows no longer hit-test above the modal header; fixed contact controls remain within viewport bounds.
+- Responsive visual review found and fixed the dark inventory-planning heading contrast issue. No additional horizontal overflow, off-viewport fixed widget, or persistent grid/sticky collision was observed in the sampled routes.
+- Deployment — pending production redeploy at the start of this entry; exact Vercel deployment evidence will be appended after direct verification.
+

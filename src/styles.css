@@ -488,7 +488,7 @@ p { color: var(--muted); font-size: 1rem; line-height: 1.7; }
 
 .overlay { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 1rem; background: rgb(3 14 33 / 78%); backdrop-filter: blur(9px); }
 .overlay-panel { width: min(1040px, 100%); max-height: calc(100vh - 32px); overflow: auto; color: var(--ink); background: var(--paper); border: 1px solid var(--line); box-shadow: 0 30px 90px rgb(3 14 33 / 35%); }
-.overlay-header { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: .85rem 1rem; color: var(--white); background: var(--ink); font-size: .72rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
+.overlay-header { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; justify-content: space-between; padding: .85rem 1rem; color: var(--white); background: var(--ink); font-size: .72rem; font-weight: 900; letter-spacing: .13em; text-transform: uppercase; }
 .overlay-header button { width: 36px; height: 36px; display: grid; place-items: center; color: var(--white); background: transparent; border: 1px solid rgb(157 187 255 / 35%); }
 .overlay-panel > p { padding: 1.2rem 2rem 0; font-size: .85rem; }
 .state-modal .overlay-panel { background: var(--paper); }

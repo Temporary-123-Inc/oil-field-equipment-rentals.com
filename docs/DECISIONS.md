@@ -755,3 +755,10 @@ The supplied restroom-only interior set may appear on the registered 12 ft, 14 f
 - Use the owner's corrected `+1-888-385-5513` / `tel:+18883855513` as the authoritative rebuild phone. This supersedes the conflicting number observed in the earlier live-source inspection.
 - Preserve the published 24/7 availability wording. Do not add a street address or email because the live rendered pages inspected do not publish either. Keep service coverage as a general North America statement rather than inventing a local office address.
 
+## 2026-10-09 — Treat shared UI layering and responsive overflow as release blockers
+
+- Overlay headers must use a higher stacking level than carousel controls inside the scrolling overlay panel. The panel remains the scroll container; arrows must not paint over the sticky header.
+- The inventory menu opens explicitly on click and closes on scroll. Hover behavior may open it on desktop, but the click handler must not toggle against the preceding pointer-enter event on touch/mobile layouts.
+- Dark section headings require an explicit light color when the global section-heading rule sets a dark brand color. The inventory equipment-plan heading is scoped accordingly.
+- Responsive verification for this site includes at least 390 px and 768 px widths, plus the current 948 px preview and a wide desktop sample; zero horizontal overflow is required on representative routes.
+
