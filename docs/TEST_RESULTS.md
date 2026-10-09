@@ -1280,3 +1280,12 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - Deployment — PASS: promoted production deployment `dpl_2DHvGLy9aHTMLc3L4XsSVmBFXudc` reached Ready at `https://oil-field-equipment-rentals-pgl6h9b6x-temporary-124.vercel.app` and is aliased to `https://oil-field-equipment-rentals.com`. Vercel logs for the deployment over the last hour returned no entries.
 - Boundary — the deployment URL is protected by Vercel Authentication. The custom domain HEAD probe returned 403, so external DNS/Cloudflare cutover and unauthenticated custom-domain rendering remain unverified; no DNS changes were made.
 
+## 2026-10-10 — Separate-site identity and indexing-header cleanup
+
+- Runtime identity audit — PASS: after rebuilding, the active client bundle contains no `Temporary Kitchen Rental`, `Temporary Kitchen`, or `temporary-kitchen-rental` strings. Historical migration/audit source files are excluded from the runtime bundle.
+- Project/config cleanup — PASS: package and lockfile names are `oil-field-equipment-rentals`; the obsolete Temporary Kitchen domain redirect was removed; active inventory-detail source/brand labels now use Oil Field Equipment Rentals or neutral equipment language.
+- Indexing header — PASS by configuration: Vercel `X-Robots-Tag: noindex, follow` is scoped to `*.vercel.app` preview hosts. The verified preview response returned `noindex, follow`; the custom Oil Field host is not matched by that rule.
+- Build — PASS: `npm run build` generated 347 sitemap URLs and 379 direct route shells. Existing large-client-chunk and legacy API/server TypeScript diagnostics remain non-blocking.
+- Deployment — PASS: commit `7ed9ea4` is pushed to main; production deployment `dpl_Huu31eZbXxCpQkjG5Pj4AELV2ffv` reached Ready and is aliased to `https://oil-field-equipment-rentals.com`. Vercel error logs for the deployment returned no entries.
+- Boundary — direct custom-domain verification is blocked by the current Cloudflare 403 challenge. No Cloudflare/DNS changes were made.
+

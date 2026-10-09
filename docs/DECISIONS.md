@@ -779,3 +779,9 @@ The supplied restroom-only interior set may appear on the registered 12 ft, 14 f
 - Remove the blanket Vercel SPA rewrite. Valid deep links are materialized during the build, while unknown direct URLs must return Vercel 404 instead of rendering the homepage as a soft 404.
 - Use Organization/WebSite/BreadcrumbList/Service JSON-LD only where the page has corresponding first-party content. Do not invent an address or email absent from the verified live source; keep the corrected phone `+1-888-385-5513` as the authoritative contact value.
 
+## 2026-10-10 — Oil Field is a separate site
+
+- Treat Temporary Kitchen Rental as historical source/migration context only. The deployed product identity, package metadata, active copy, source labels, canonical URLs, and indexing policy belong to Oil Field Equipment Rentals.
+- Reuse page structure and relevant inventory concepts where they fit the Oil Field offering, but do not preserve the prior brand, prior domain redirects, or prior brand language in the active runtime.
+- Preview deployment hosts remain noindex for safe review. The production Oil Field custom domain must be indexable; therefore the Vercel `X-Robots-Tag` rule is matched to `*.vercel.app` preview hosts rather than using an exception for the former domain.
+
