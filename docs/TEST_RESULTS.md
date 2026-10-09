@@ -1260,5 +1260,5 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - `git diff --check` — PASS.
 - `npm run build` — PASS; Vite production build completed with the existing large-client-chunk warning.
 - Visual review — PASS: 1440 px full-page Mancamp and Services captures show standalone page-intro and CTA headlines using the available width; 390 px Mancamp capture remains readable and has no intentional overflow. Paired two-column headings retain their composition.
-- Deployment — pending production redeploy.
+- Deployment — PASS: commit `4f90e4d` pushed to `Temporary-123-Inc/oil-field-equipment-rentals.com` main; production deployment `dpl_BMAygrfGs68nMTrhBs479nUk9nAE` reached Ready at `https://oil-field-equipment-rentals-qqzwwmuq9-temporary-124.vercel.app` and was aliased to `https://oil-field-equipment-rentals.com`. Protected `vercel curl` checks for `/mancamp/` and `/services/` returned the new asset fingerprints `index-C6Ne6mh2.js` and `index-Df198UV_.css`. `vercel logs --since 1h --level error` returned no logs. Browser visual review was completed locally because Vercel Authentication protects the deployment.
 

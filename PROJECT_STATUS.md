@@ -340,5 +340,5 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - Widened standalone page-intro headings, CTA-band headings, and the one-column inventory support heading so large display text uses the available section width instead of clumping into a narrow left stack.
 - Preserved constrained headings in intentional two-column compositions such as hero/image, process/list, calculator/estimate, contact/form, and case-study/source layouts.
 - Local evidence: refreshed 1440 px full-page captures for Mancamp and Services plus a 390 px Mancamp capture; `git diff --check` and `npm run build` pass. Existing large-client-chunk warning remains.
-- Deployment state: pending redeploy for this refinement.
+- Deployment state: commit `4f90e4d` is pushed to GitHub main and deployed as Ready production deployment `dpl_BMAygrfGs68nMTrhBs479nUk9nAE` at protected preview `https://oil-field-equipment-rentals-qqzwwmuq9-temporary-124.vercel.app`; Vercel aliased it to `https://oil-field-equipment-rentals.com`. Protected checks returned the new CSS/JS assets for `/mancamp/` and `/services/`, and the last-hour Vercel error scan returned no logs. The custom domain's external DNS/Cloudflare cutover remains unverified.
 
