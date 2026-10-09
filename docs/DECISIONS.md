@@ -1,5 +1,12 @@
 # TemporaryKitchenRental Decision Log
 
+## 2026-10-09 — Create the requested GitHub/Vercel deployment target
+
+- Create the public GitHub repository `Temporary-123-Inc/oil-field-equipment-rentals.com` and keep `main` as the source branch.
+- Use the Vercel team `temporary-124` (display name `Temporary 123`) and project `oil-field-equipment-rentals.com`; the Vercel deployment is Ready but remains protected by Vercel Authentication.
+- Attach `oil-field-equipment-rentals.com` without changing registrar or DNS records. Vercel reports the existing GoDaddy nameservers/Cloudflare A records are not configured for Vercel; the owner must choose whether to update the apex records or nameservers before the custom domain can serve this deployment.
+- Treat the Vercel TypeScript diagnostics from legacy API/server files as a remaining boundary, not as proof that those endpoints are production-ready. The deployed frontend is verified through the protected Vercel curl path.
+
 ## 2026-10-09 — Use workbook subtitles and incident analyses as location content
 
 - Map the 50 state rows by exact state name and the 246 regional rows by exact `regional_guide_location`; do not infer a city from a nearby region name.

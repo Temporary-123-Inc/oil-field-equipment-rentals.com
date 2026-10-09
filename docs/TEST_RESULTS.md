@@ -1,5 +1,15 @@
 # TemporaryKitchenRental Test Results
 
+## 2026-10-09 — GitHub/Vercel deployment
+
+- GitHub repository — PASS: public `https://github.com/Temporary-123-Inc/oil-field-equipment-rentals.com` exists under the requested organization, default branch is `main`, and `git ls-remote` confirms deployed source commit `ef4f8fd`.
+- Vercel project — PASS: project `temporary-124/oil-field-equipment-rentals.com` exists and is linked to the checkout.
+- Vercel production deployment — PASS: deployment `dpl_6u2m4sNmYPwjsvyvSgUEvK7NEzz8` is `READY` at `https://oil-field-equipment-rentals-1qvkunkba-temporary-124.vercel.app`; build duration was 40 seconds.
+- Protected production content — PASS: `vercel curl` returned the Oil Field Equipment Rentals HTML shell with the correct title and mancamp meta description. Direct unauthenticated HTTP returns the Vercel Authentication page because Deployment Protection is enabled.
+- Error scan — PASS: `vercel logs ... --level error --since 1h` returned no logs.
+- Custom domain — ATTACHED / DNS PENDING: `oil-field-equipment-rentals.com` is attached to the project, but Vercel reports the current external DNS is invalid. Recommended apex A records are `216.150.1.1` and `216.150.16.1`; no DNS changes were made.
+- Vercel diagnostics — WARNING: the platform emitted non-blocking TypeScript diagnostics for legacy `api/` and `server/` files because the current `package.json` does not include their historical server dependencies/types. The Vite frontend build and deployment completed successfully.
+
 ## 2026-10-09 — Workbook content integration
 
 - Workbook mapping — PASS: `content-export-basecamp-20261009-103457.xlsx` contains 296 records; all 50 state pages and 246 regional/city records have matching subtitle, incident analysis, and article URL entries in `src/data/locationContent.json`.
