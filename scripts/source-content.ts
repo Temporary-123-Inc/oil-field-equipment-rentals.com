@@ -1,0 +1,257 @@
+import { load } from "cheerio";
+
+type Options = {
+  origin: string;
+  routes: Set<string>;
+  redirects: Map<string, string>;
+  media: Record<string, { local?: string }>;
+  unresolved: Set<string>;
+  dimensions?: Record<string, { width: number; height: number }>;
+  removeLeadParagraph?: boolean;
+  replacedLead?: string;
+};
+
+const verifiedAltByLocalMedia: Record<string, string> = {
+  "/media/ea84f33b3717d1b8918f930c.png": "United States Air Force seal",
+  "/media/73b5f4165b762f9b5864ad12.png": "United States Army seal",
+  "/media/2092584ed5842c755cee4670.png": "United States Coast Guard seal",
+  "/media/eded316f3d11e80e55e9b459.png":
+    "United States Department of Veterans Affairs seal",
+  "/media/191f3fd3c38ca7ba0af28c54.png": "United States Marine Corps seal",
+  "/media/c6578f14258acbe4780c3793.png":
+    "United States Department of the Navy seal",
+  "/media/3ce3bc9f066f86f54836e1b3.webp":
+    "Large shower and restroom trailer with open private stalls and an ADA access ramp",
+  "/media/b295f33efea88dc4497a26c2.webp":
+    "Large shower and restroom trailer at dusk with illuminated open private stalls",
+  "/media/ce6614a557c75682ffc570f2.png":
+    "Emergency base camp CAD site plan with temporary sleeper, shower, restroom, laundry, dining and support units",
+  "/media/1ac075338bb250b85779f3e2.png":
+    "Four-room deluxe sleeper trailer exterior with entry steps and bunk rooms",
+  "/media/0565a9898f04382d02ea17f6.png":
+    "Mobile command center office trailer exterior with desks and monitors visible through the open door",
+  "/media/2e9e8064f1d689d4bf02d975.png":
+    "Mobile command center office trailer exterior with workstations and display screens",
+  "/media/cabdb3d7102cfc907e29b9c2.png":
+    "Temporary sleeper, office, laundry, shower, restroom and hand-sanitation support facilities",
+  "/media/03efc139cc08fb12416ec9f7.png":
+    "Temporary mobile kitchen, refrigeration, dishwashing, water, ramp and generator support facilities",
+  "/media/42cd0eec786d86ea67fa4fde.png":
+    "Mobile kitchen trailer equipment elevation with ovens, skillets, sinks, preparation tables and refrigeration",
+  "/media/83eb76b43d26ae91bc2b9c11.png":
+    "Forty-foot mobile kitchen trailer equipment elevation with walk-in refrigerator and freezer",
+  "/media/ee5ce479c966af021cd6b78b.png":
+    "Forty-foot mobile kitchen trailer floor plan with cooking, preparation, sink and refrigeration equipment",
+  "/media/30edc5b4ac0956615e579ab5.png":
+    "Commercial mobile kitchen trailer interior with stainless-steel ventilation hoods and cooking equipment",
+};
+
+const directoryHeadingText =
+  /^(complete list of states and cities of united states|other states we served|top 100 big cities that we served)$/i;
+
+function pruneLegacyDirectorySections(html: string) {
+  const headingPattern = /<h([2-6])\b[^>]*>([\s\S]*?)<\/h\1\s*>/gi;
+  let output = html;
+  let match: RegExpExecArray | null;
+  while ((match = headingPattern.exec(output))) {
+    const headingText = match[2].replace(/<[^>]+>/g, "").trim();
+    if (!directoryHeadingText.test(headingText)) continue;
+    const level = Number(match[1]);
+    const followingHeadings = /<h([2-6])\b/gi;
+    followingHeadings.lastIndex = match.index + match[0].length;
+    let next: RegExpExecArray | null;
+    let end = output.length;
+    while ((next = followingHeadings.exec(output))) {
+      if (Number(next[1]) <= level) {
+        end = next.index;
+        break;
+      }
+    }
+    output =
+      output.slice(0, match.index) +
+      '<p><a href="/service-areas/">Explore our service areas</a></p>' +
+      output.slice(end);
+    headingPattern.lastIndex = match.index;
+  }
+  return output;
+}
+
+export function renderSourceContent(html: string, options: Options) {
+  // Some archived WordPress responses contain tens of thousands of consecutive
+  // break tags. They have no additional visual meaning after two breaks, but
+  // constructing a DOM for every one makes prerendering take minutes per page.
+  const normalizedHtml = pruneLegacyDirectorySections(html).replace(
+    /(?:\s*<br\s*\/?>(?:\s|&nbsp;)*){3,}/gi,
+    "<br><br>",
+  );
+  const $ = load(normalizedHtml, undefined, false);
+  // Archived source pages are retained for URL continuity. Their prose must
+  // never leak the former portfolio brand into the Temporary Kitchen Rental site.
+  // Link migration is handled independently below, so both spaced and compact
+  // former-brand spellings can be removed safely from customer-facing prose.
+  $("*")
+    .contents()
+    .each((_, node) => {
+      if (
+        node.type !== "text" ||
+        !("data" in node) ||
+        typeof node.data !== "string"
+      )
+        return;
+      node.data = node.data.replace(
+        /\btemporary\s*123\b/gi,
+        "Temporary Kitchen Rental",
+      );
+    });
+  if (options.removeLeadParagraph) {
+    // Site renders the aligned H1 lead. Preserve navigation, images and archives.
+    const normalizeLead = (s: string) => s.replace(/\s+/g, " ").trim();
+    const first = $("p")
+      .filter(
+        (_, el) =>
+          Boolean(options.replacedLead) &&
+          normalizeLead($(el).text()) ===
+            normalizeLead(options.replacedLead || "") &&
+          !$(el).find("img").length,
+      )
+      .first();
+    if (first.length) first.remove();
+  }
+  // These headings introduce repeated global navigation, not page-specific copy.
+  // Preserve subsequent peer sections and keep the original archive untouched.
+  $("h2,h3,h4,h5,h6").each((_, el) => {
+    if (!directoryHeadingText.test($(el).text().trim())) return;
+    const level = Number(el.tagName.slice(1));
+    let next = el.nextSibling;
+    while (next) {
+      if (
+        next.type === "tag" &&
+        /^h[2-6]$/.test(next.tagName) &&
+        Number(next.tagName.slice(1)) <= level
+      )
+        break;
+      const following = next.nextSibling;
+      $(next).remove();
+      next = following;
+    }
+    $(el).replaceWith(
+      '<p><a href="/service-areas/">Explore our service areas</a></p>',
+    );
+  });
+
+  $("img").each((_, el) => {
+    const image = $(el);
+    const original = image.attr("src") || "";
+    const mapped = options.media[original]?.local;
+    if (mapped) image.attr("src", mapped);
+    else if (/^https?:/.test(original)) {
+      options.unresolved.add(original);
+      // Retain the source reference in the archive and migration ledger. The
+      // existing CSP cannot display remote images; do not emit broken images.
+      image.remove();
+      return;
+    }
+    const src = image.attr("src") || "";
+    const verifiedAlt = verifiedAltByLocalMedia[src];
+    if (verifiedAlt) image.attr("alt", verifiedAlt);
+    const size = options.dimensions?.[src];
+    if (size)
+      image.attr({ width: String(size.width), height: String(size.height) });
+    image.attr({ loading: "lazy", decoding: "async" });
+  });
+
+  $("a[href]").each((_, el) => {
+    const a = $(el),
+      href = a.attr("href") || "";
+    if (/^(tel:|mailto:|#)/i.test(href)) return;
+    let url: URL;
+    try {
+      url = new URL(href, options.origin);
+    } catch {
+      return;
+    }
+    if (
+      ![
+        new URL(options.origin).hostname,
+        "temporary-kitchen-rental.com",
+        "www.temporary-kitchen-rental.com",
+      ].includes(
+        url.hostname,
+      )
+    )
+      return;
+    const firstTextNode = a
+      .contents()
+      .toArray()
+      .find(
+        (node) =>
+          node.type === "text" &&
+          "data" in node &&
+          typeof node.data === "string" &&
+          node.data.trim().length > 0,
+      );
+    if (
+      firstTextNode &&
+      "data" in firstTextNode &&
+      typeof firstTextNode.data === "string"
+    )
+      firstTextNode.data = firstTextNode.data.replace(
+        /^(\s*)([a-z])/,
+        (_match: string, space: string, letter: string) =>
+          `${space}${letter.toUpperCase()}`,
+      );
+    const path = url.pathname;
+    const suffix = url.search + url.hash;
+    const mapped = options.media[new URL(path, options.origin).href]?.local;
+    if (mapped) {
+      a.attr("href", mapped + suffix);
+      return;
+    }
+    if (options.routes.has(path)) {
+      a.attr("href", path + suffix);
+      return;
+    }
+    const redirect = options.redirects.get(path);
+    if (redirect) {
+      a.attr("href", redirect + suffix);
+      return;
+    }
+    options.unresolved.add(path);
+    // An image's enlargement link may be unavailable while its displayed
+    // source image is recovered. Link to that actual image, never fake an asset.
+    if (/\.(png|jpe?g|webp|gif)$/i.test(path)) {
+      const image = a.find("img").first();
+      const recovered = image.attr("src");
+      if (recovered?.startsWith("/")) {
+        a.attr("href", recovered);
+        if (!image.attr("alt")) a.attr("aria-label", "View image");
+        return;
+      }
+    }
+    // Keep unresolved valuable links visible and explicitly tracked. Never
+    // silently turn them into a homepage redirect or claim migration success.
+    // Unavailable routes remain readable but are not emitted as broken links.
+    const unavailable = $("<span></span>")
+      .addClass("migration-link-unavailable")
+      .attr("data-unavailable-path", path);
+    unavailable.append(a.contents());
+    a.replaceWith(unavailable);
+  });
+  $("a").each((_, el) => {
+    if (!$(el).text().trim() && !$(el).find("img").length) $(el).remove();
+  });
+  $("h2,h3,h4,h5,h6").each((_, el) => {
+    const previous = $(el).prevAll("h2,h3,h4,h5,h6").first();
+    const max = previous.length ? Number(previous[0].tagName.slice(1)) + 1 : 2;
+    if (Number(el.tagName.slice(1)) > max) el.tagName = `h${max}`;
+  });
+  $("figure").each((_, el) => {
+    const figure = $(el);
+    if (
+      !figure.find("img,picture,iframe,video,figcaption").length &&
+      !figure.text().trim()
+    )
+      figure.remove();
+  });
+  return $.html();
+}

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title desc">
+  <title id="title">Oil Field Equipment Rentals mark</title>
+  <desc id="desc">Orange geometric trailer mark.</desc>
+  <rect width="180" height="180" fill="#1C1C1C"/>
+  <g fill="none" stroke="#F47920" stroke-width="16">
+    <path d="M25 24h130v116H25z"/>
+    <path d="M59 58h62v58H59z"/>
+    <path d="M25 140h130"/>
+  </g>
+  <circle cx="66" cy="156" r="9" fill="#F47920"/>
+  <circle cx="114" cy="156" r="9" fill="#F47920"/>
+</svg>

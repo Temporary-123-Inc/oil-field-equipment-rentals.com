@@ -1,0 +1,13 @@
+allowBuilds:
+  '@firebase/util': true
+  esbuild: true
+  protobufjs: true
+  re2: true
+overrides:
+  tar: ^7.5.10
+  jwks-rsa>jose: 5.10.0
+onlyBuiltDependencies:
+  - "@firebase/util"
+  - esbuild
+  - protobufjs
+  - re2

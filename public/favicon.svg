@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Oil Field Equipment Rentals">
+  <rect width="64" height="64" fill="#1C1C1C"/>
+  <path d="M10 10h44v38H10zM22 21h20v18H22zM10 48h44" fill="none" stroke="#F47920" stroke-width="6"/>
+  <circle cx="22" cy="55" r="3.5" fill="#F47920"/><circle cx="42" cy="55" r="3.5" fill="#F47920"/>
+</svg>

@@ -1,0 +1,18 @@
+{
+  "brand": "Oil Field Equipment Rentals",
+  "origin": "https://oil-field-equipment-rentals.com",
+  "phoneDisplay": "+1 (888) 385-5513",
+  "phoneE164": "+18883855513",
+  "mode": "production",
+  "indexingScope": "full",
+  "indexingBatchSize": 1000,
+  "activeIndexingBatch": 1,
+  "indexingStartDate": "2026-09-14",
+  "inquiriesEnabled": false,
+  "domainRoutingReady": true,
+  "indexingApproval": {
+    "scope": "all-public-static-routes",
+    "approvedBy": "site owner via Codex conversation",
+    "approvedAt": "2026-10-03"
+  }
+}

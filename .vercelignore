@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+node_modules
+dist
+test-results
+playwright-report
+.temp
+.codex-tmp
+work
+dist-da-dashboard
+dist-index-dashboard
+outputs

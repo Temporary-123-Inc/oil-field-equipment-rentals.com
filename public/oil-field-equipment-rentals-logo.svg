@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-labelledby="title desc">
+  <title id="title">Oil Field Equipment Rentals</title>
+  <desc id="desc">Orange modular trailer mark beside the Oil Field Equipment Rentals wordmark.</desc>
+  <g fill="none" stroke="#F47920" stroke-width="16">
+    <path d="M22 20h128v116H22z"/>
+    <path d="M56 54h60v58H56z"/>
+    <path d="M22 136h128"/>
+  </g>
+  <circle cx="62" cy="151" r="9" fill="#1C1C1C"/>
+  <circle cx="111" cy="151" r="9" fill="#1C1C1C"/>
+  <text x="184" y="68" fill="#1C1C1C" font-family="Arial Narrow, Arial, sans-serif" font-size="48" font-weight="900" letter-spacing="1">OIL FIELD</text>
+  <text x="184" y="115" fill="#F47920" font-family="Arial Narrow, Arial, sans-serif" font-size="43" font-weight="900" letter-spacing=".5">EQUIPMENT RENTALS</text>
+  <text x="185" y="151" fill="#1C1C1C" font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="5">MOBILE FACILITIES. FIELD-READY SUPPORT.</text>
+</svg>

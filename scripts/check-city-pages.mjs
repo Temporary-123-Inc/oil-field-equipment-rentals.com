@@ -1,0 +1,223 @@
+import { readFile, stat } from "node:fs/promises";
+import { join } from "node:path";
+import { load } from "cheerio";
+import { cityEditorial } from "../src/cityEditorial.ts";
+import { statePath } from "../src/statePaths.ts";
+
+const inventory = JSON.parse(await readFile("src/cityDirectory.json", "utf8"));
+const stateGuides = (await import("../src/stateGuides.ts")).stateGuides;
+const slug = (text) =>
+  text
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+const fileFor = (url) =>
+  join("dist", ...url.split("/").filter(Boolean), "index.html");
+const issues = [];
+const geoids = new Set();
+const paths = new Set();
+const expectedByRegion = new Map();
+const reviewedPaths = new Set();
+for (const row of inventory.records) {
+  const [geoid, name, state, regionIndex, citySlug] = row;
+  const region = stateGuides[state]?.regions[regionIndex];
+  if (!region) issues.push(`Unknown region for ${geoid}`);
+  const regionPath = `/service-areas/${slug(state)}/${slug(region)}/`;
+  const cityPath = `${regionPath}${citySlug}/`;
+  if (geoids.has(geoid)) issues.push(`Duplicate Census ID ${geoid}`);
+  if (paths.has(cityPath)) issues.push(`Duplicate city path ${cityPath}`);
+  geoids.add(geoid);
+  paths.add(cityPath);
+  expectedByRegion.set(regionPath, (expectedByRegion.get(regionPath) || 0) + 1);
+  if (cityEditorial[geoid]) reviewedPaths.add(cityPath);
+}
+if (inventory.records.length < 19000)
+  issues.push(`Unexpected inventory size ${inventory.records.length}`);
+if (expectedByRegion.size !== 246)
+  issues.push(
+    `Expected 246 region directories, found ${expectedByRegion.size}`,
+  );
+
+for (const route of ["/", "/service-areas/"]) {
+  const serviceAreasHtml = await readFile(fileFor(route), "utf8");
+  const serviceAreas = load(serviceAreasHtml);
+  const mapStateLinks = new Map();
+  const stateCards = serviceAreas(
+    ".map-location-directory .map-location-grid > div",
+  );
+  serviceAreas(".map-location-directory a.map-location-state").each(
+    (_, element) => {
+      const href = serviceAreas(element).attr("href");
+      if (href) mapStateLinks.set(href, (mapStateLinks.get(href) || 0) + 1);
+    },
+  );
+  for (const state of Object.keys(stateGuides)) {
+    const path = statePath(state);
+    if (mapStateLinks.get(path) !== 1)
+      issues.push(`Map must link state exactly once: ${path}`);
+  }
+  if (mapStateLinks.size !== Object.keys(stateGuides).length)
+    issues.push(
+      `Map exposes ${mapStateLinks.size} state links, expected ${Object.keys(stateGuides).length}`,
+    );
+  const actualStates = new Set();
+  stateCards.each((_, element) => {
+    const card = serviceAreas(element);
+    const stateLink = card.find("a.map-location-state");
+    const state = stateLink.text().replace(/^Mobile Kitchen Trailer Rental in\s+/, "").trim();
+    if (!state || !stateGuides[state]) {
+      issues.push(`Map has an unknown state card: ${state || "unnamed"}`);
+      return;
+    }
+    actualStates.add(state);
+    const expectedRegions = stateGuides[state].regions.map((region) =>
+      `/service-areas/${slug(state)}/${slug(region)}/`,
+    );
+    const regionLinks = card.find("details a[href]").map((_, link) =>
+      serviceAreas(link).attr("href"),
+    ).get();
+    if (
+      regionLinks.length !== expectedRegions.length ||
+      new Set(regionLinks).size !== expectedRegions.length ||
+      expectedRegions.some((path) => !regionLinks.includes(path))
+    )
+      issues.push(`Map regions do not match configured guides for ${state}`);
+    const summary = card.find("details summary").text().trim();
+    if (summary !== `Regions and cities in ${state}`)
+      issues.push(`Map region disclosure has incorrect label for ${state}`);
+  });
+  if (actualStates.size !== Object.keys(stateGuides).length)
+    issues.push(
+      `Map has ${actualStates.size} state cards, expected ${Object.keys(stateGuides).length}`,
+    );
+  for (const path of reviewedPaths) {
+    const regionPath = path.slice(0, path.lastIndexOf("/", path.length - 2) + 1);
+    const regionHtml = await readFile(fileFor(regionPath), "utf8");
+    const region = load(regionHtml);
+    const cityLinks = region(".region-city-link-grid a[href]")
+      .toArray()
+      .filter((element) => region(element).attr("href") === path);
+    if (cityLinks.length !== 1)
+      issues.push(`Parent region must link reviewed city exactly once: ${path}`);
+  }
+}
+
+for (const [regionPath, expected] of expectedByRegion) {
+  const html = await readFile(fileFor(`${regionPath}cities/`), "utf8");
+  const $ = load(html);
+  const entries = $("[data-city-item]");
+  if (entries.length !== expected)
+    issues.push(`${regionPath} lists ${entries.length}, expected ${expected}`);
+  $(".city-directory-grid a[href]").each((_, element) => {
+    const href = $(element).attr("href");
+    if (!reviewedPaths.has(href))
+      issues.push(`${regionPath} links unreviewed city ${href}`);
+  });
+}
+
+const textBodies = [];
+const titles = new Set();
+for (const row of inventory.records) {
+  const [geoid, , state, regionIndex, citySlug] = row;
+  const region = stateGuides[state].regions[regionIndex];
+  const cityPath = `/service-areas/${slug(state)}/${slug(region)}/${citySlug}/`;
+  if (!cityEditorial[geoid]) {
+    try {
+      await stat(fileFor(cityPath));
+      issues.push(`Unreviewed city generated as a page: ${cityPath}`);
+    } catch {}
+    continue;
+  }
+  const html = await readFile(fileFor(cityPath), "utf8");
+  const $ = load(html);
+  const title = $("title").text().trim();
+  const h1 = $("main h1").first().text().trim();
+  // Count the city editorial presentation, not carousel captions or duplicated
+  // responsive slides. The carousel is validated independently below.
+  const words = $(".city-hero-copy, .city-answer, .city-local, .city-related")
+    .text()
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ").length;
+  const carouselImages = $(".city-equipment-carousel img[src]");
+  const carouselSlides = $(
+    ".city-equipment-carousel [data-carousel-slide] img[data-carousel-alt]",
+  );
+  const imageSources = new Set(
+    carouselImages
+      .map((_, element) => $(element).attr("src"))
+      .get()
+      .filter(Boolean),
+  );
+  if (titles.has(title)) issues.push(`Duplicate city title: ${title}`);
+  titles.add(title);
+  if (
+    !h1.includes(row[1]) ||
+    !/(?:Rental|For Rent|Leasing|Short-Term Rental|Long-Term Rental)/.test(h1)
+  )
+    issues.push(`Weak city H1: ${cityPath}`);
+  if (words < 250 || words > 500)
+    issues.push(`City word count ${words}: ${cityPath}`);
+  if (imageSources.size < 1)
+    issues.push(`City equipment gallery has no image: ${cityPath}`);
+  carouselSlides.each((_, element) => {
+    if (!$(element).attr("data-carousel-alt")?.trim())
+      issues.push(`City equipment slide lacks descriptive text: ${cityPath}`);
+  });
+  if (
+    !$('.city-equipment-carousel [data-carousel-slide][data-active="true"] img')
+      .first()
+      .attr("alt")
+      ?.trim()
+  )
+    issues.push(`Active city equipment image lacks alt text: ${cityPath}`);
+  if (!$(".city-equipment-carousel figcaption").length)
+    issues.push(`City equipment gallery lacks a caption: ${cityPath}`);
+  if (!$(".city-sources a[href]").length)
+    issues.push(`Missing local source: ${cityPath}`);
+  if ($(".breadcrumb a").length < 4)
+    issues.push(`Incomplete breadcrumb: ${cityPath}`);
+  if (!html.includes("Emergency 24/7"))
+    issues.push(`Missing emergency support: ${cityPath}`);
+  const editorial = cityEditorial[geoid];
+  textBodies.push({
+    path: cityPath,
+    text: `${editorial.intro} ${editorial.answer} ${editorial.local} ${editorial.seasonal} ${editorial.question}`,
+  });
+}
+
+const shingles = (text) => {
+  const terms = text
+    .toLowerCase()
+    .replace(/[^a-z0-9 ]/g, " ")
+    .split(/\s+/)
+    .filter(Boolean);
+  return new Set(
+    terms
+      .slice(0, -4)
+      .map((_, index) => terms.slice(index, index + 5).join(" ")),
+  );
+};
+for (let i = 0; i < textBodies.length; i++) {
+  for (let j = i + 1; j < textBodies.length; j++) {
+    const a = shingles(textBodies[i].text);
+    const b = shingles(textBodies[j].text);
+    const overlap = [...a].filter((part) => b.has(part)).length;
+    const similarity = overlap / (a.size + b.size - overlap);
+    if (similarity > 0.35)
+      issues.push(
+        `Near-duplicate city substance ${similarity.toFixed(2)}: ${textBodies[i].path} and ${textBodies[j].path}`,
+      );
+  }
+}
+
+console.log(
+  JSON.stringify({
+    censusPlaces: inventory.records.length,
+    regionDirectories: expectedByRegion.size,
+    reviewedCityPages: reviewedPaths.size,
+    issues: issues.slice(0, 30),
+  }),
+);
+if (issues.length) process.exitCode = 1;

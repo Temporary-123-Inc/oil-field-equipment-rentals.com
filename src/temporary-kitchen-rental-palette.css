@@ -1,0 +1,260 @@
+/* Final brand layer: loaded after legacy layout sheets so all retained modules
+   share the Temporary Kitchen Rental orange, red, charcoal, cream and white system. */
+:root {
+  --mk-orange: #f47b20;
+  --mk-orange-dark: #d95f08;
+  --mk-red: #b90000;
+  --mk-charcoal: #242424;
+  --mk-ink: #171717;
+  --mk-cream: #fff8f1;
+  --mk-line: #eadfd5;
+  --accent: var(--mk-orange);
+  --accent-hover: var(--mk-orange-dark);
+  --ink: var(--mk-ink);
+  --blue: var(--mk-orange-dark);
+  --blue-hover: #b94c00;
+  --cyan: var(--mk-orange);
+  --muted: #625a54;
+  --line: var(--mk-line);
+  --pale: var(--mk-cream);
+  --dark-muted: #f3dfcf;
+  --border-strong: #c9895a;
+}
+
+/* Shared closing/contact modules. */
+.closing,
+.region-map-strip {
+  background: var(--mk-charcoal);
+  border-color: var(--mk-orange);
+}
+.closing .eyebrow,
+.region-map-strip .eyebrow,
+.closing .small,
+.region-map-copy p {
+  color: #f3dfcf;
+}
+.closing p { color: #fff8f1; }
+.closing .phone-link {
+  border-color: var(--mk-orange);
+  background: var(--mk-orange);
+  color: #fff;
+}
+.closing .phone-link:hover { background: var(--mk-orange-dark); }
+.contact-rail,
+.contact-rail-refresh,
+.emergency-dispatch-trigger {
+  background: var(--mk-red) !important;
+  border-color: var(--mk-red) !important;
+  color: #fff !important;
+}
+.contact-rail:hover,
+.contact-rail:focus-visible,
+.emergency-dispatch-trigger:hover,
+.emergency-dispatch-trigger:focus-visible {
+  background: #8f0000 !important;
+  border-color: #8f0000 !important;
+}
+
+/* Nationwide coverage map: preserve all geography and controls, remove teal. */
+.coverage-map,
+.map-location-directory {
+  color: var(--mk-ink);
+}
+.coverage-map {
+  border-color: #efc6a2;
+  background: #fff;
+  box-shadow: 0 12px 36px rgb(114 49 10 / 12%);
+}
+.coverage-map .coverage-map-topline > span,
+.coverage-map .map-state-picker,
+.coverage-map .map-state-picker select,
+.coverage-map .map-labels,
+.coverage-map .map-labels text,
+.coverage-map .map-labels .map-callout text,
+.coverage-map .map-labels text.map-island-label,
+.coverage-map .map-dialog,
+.coverage-map .state-services-dialog { color: var(--mk-ink); }
+.coverage-map .coverage-map-topline > strong {
+  background: #fff0e3;
+  color: #9d4200;
+}
+.coverage-map-intro,
+.coverage-map > figcaption,
+.coverage-map .map-dialog > p,
+.coverage-map .map-ocean,
+.coverage-map #state-services-intro,
+.coverage-map .state-local-context p,
+.coverage-map .state-service-summary { color: #625a54; }
+.coverage-map .map-depth { fill: #f4c394; stroke: #f4c394; }
+.coverage-map .map-land path { stroke: #c56a23; }
+.coverage-map .map-land path:hover { fill: #f47b20; stroke: #9d4200; }
+.coverage-map .map-land path[role="button"]:focus-visible { fill: #f9b875; stroke: #7a2e00; }
+.coverage-map .map-labels text { stroke: #fff8f1; }
+.coverage-map .map-callout-surface { fill: #fff8f1; stroke: #efc6a2; }
+.coverage-map .map-leader { stroke: #c56a23; }
+.coverage-map .map-leader-point { fill: var(--mk-red); }
+.coverage-map .map-controls,
+.coverage-map .map-dialog-heading,
+.coverage-map .map-large-scroll { border-color: #efc6a2; }
+.coverage-map .map-large-scroll { background: #fff8f1; }
+.coverage-map .map-state-picker select { border-color: #d8a36f; }
+.coverage-map .map-tools button,
+.coverage-map .map-dialog-heading button {
+  border-color: var(--mk-orange);
+  background: var(--mk-orange);
+}
+.coverage-map .map-tools button:hover,
+.coverage-map .map-dialog-heading button:hover {
+  border-color: var(--mk-orange-dark);
+  background: var(--mk-orange-dark);
+}
+.coverage-map .map-tools a {
+  border-color: #d8a36f;
+  color: var(--mk-ink);
+}
+.coverage-map .map-tools a:hover { border-color: var(--mk-orange); background: #fff0e3; }
+.coverage-map :is(button, a, select, [tabindex="0"]):focus-visible { outline-color: var(--mk-orange); }
+.coverage-map .map-dialog,
+.coverage-map .state-services-dialog { border-color: #efc6a2; }
+.coverage-map .map-dialog::backdrop { background: rgb(36 36 36 / 78%); }
+.coverage-map .state-services-dialog {
+  --state-accent: var(--mk-orange);
+  --state-tint: #fff0e3;
+  --state-tint-strong: #ffe0c5;
+  border-top-color: var(--mk-orange);
+}
+.coverage-map .state-services-dialog[data-state-theme] {
+  --state-accent: var(--mk-orange);
+  --state-tint: #fff0e3;
+  --state-tint-strong: #ffe0c5;
+}
+.coverage-map .state-dialog-visual { box-shadow: 0 18px 36px rgb(114 49 10 / 14%); }
+.coverage-map .state-dialog-visual figcaption span { color: #ffe0c5; }
+
+/* Inner-page legacy teal accents. */
+.secondary-page,
+.location-page,
+.region-page,
+.map-section,
+.location-hero { --secondary-ink: var(--mk-ink); --secondary-teal: var(--mk-orange-dark); --secondary-muted: #625a54; --secondary-line: var(--mk-line); }
+.secondary-page :is(a:hover, a:focus-visible),
+.location-page :is(a:hover, a:focus-visible),
+.region-page :is(a:hover, a:focus-visible) { color: var(--mk-orange-dark); }
+.region-map-visual figcaption { color: var(--mk-ink); }
+.region-map-visual figcaption a { color: var(--mk-orange-dark); }
+
+/* Calculator and mobile contact controls formerly used pale aqua surfaces. */
+.calculator-page { background: #fff8f1; color: var(--mk-ink); }
+.calculator-hero,
+.price-table-wrap h3 { background: var(--mk-charcoal); }
+.calculator-hero p { color: #f3dfcf; }
+.calculator-form-card,
+.calculator-result-card,
+.calculator-state-list details { border-color: #efc6a2; }
+.calculator-result-card,
+.home-calculator-feature { background: #fff0e3; border-color: #efc6a2; }
+.calculator-fields label,
+.calculator-quote-section legend { color: var(--mk-ink); }
+.calculator-fields input:focus,
+.calculator-fields select:focus,
+.calculator-fields textarea:focus { outline-color: rgb(244 123 32 / 28%); border-color: var(--mk-orange); }
+.calculator-quote-section { border-color: #efc6a2; background: #fff8f1; }
+.calculator-result-card dl div { border-color: #efc6a2; }
+.calculator-result-card :is(dt, [data-estimate-message], .calculator-details-link, .home-calculator-price span),
+.calculator-quote-section :is(> p:first-of-type, .calculator-privacy, .calculator-consent, .calculator-submit-status),
+.calculator-home-intro,
+.calculator-disclaimer { color: #625a54; }
+.calculator-phone { color: var(--mk-orange-dark); }
+.mobile-call.mobile-call-refresh { background: var(--mk-charcoal); border-top-color: var(--mk-charcoal); }
+.contact-grid .phone-link { color: var(--mk-orange-dark); }
+
+/* Strict button system: orange actions use black text, red actions use white.
+   Image-thumbnail controls intentionally retain their photographs rather than
+   a fill color. */
+.button,
+.coverage-map .state-services-cta .button,
+.region-delivery-card a,
+.region-answer-call,
+.coverage-map .state-delivery-card b,
+.service-carousel-arrow,
+.service-carousel-toggle,
+.contact-drawer-actions button,
+.contact-drawer-actions a,
+.state-preview-dialog > button,
+.map-dialog-heading button,
+.header-refresh .mobile-nav > summary,
+.mobile-nav > summary {
+  border-color: var(--mk-orange);
+  background: var(--mk-orange);
+  color: #171717;
+}
+.button:hover,
+.button:focus-visible,
+.coverage-map .state-services-cta .button:hover,
+.coverage-map .state-services-cta .button:focus-visible,
+.region-delivery-card a:hover,
+.region-delivery-card a:focus-visible,
+.region-answer-call:hover,
+.region-answer-call:focus-visible {
+  border-color: var(--mk-orange-dark);
+  background: var(--mk-orange-dark);
+  color: #171717;
+}
+.button.secondary {
+  border-color: var(--mk-red);
+  background: var(--mk-red);
+  color: #fff;
+}
+.button.secondary:hover,
+.button.secondary:focus-visible {
+  border-color: #8f0000;
+  background: #8f0000;
+  color: #fff;
+}
+.service-carousel-arrow:hover,
+.service-carousel-arrow:focus-visible,
+.service-carousel-toggle:hover,
+.service-carousel-toggle:focus-visible,
+.contact-drawer-actions button:hover,
+.contact-drawer-actions button:focus-visible,
+.contact-drawer-actions a:hover,
+.contact-drawer-actions a:focus-visible,
+.state-preview-dialog > button:hover,
+.state-preview-dialog > button:focus-visible,
+.map-dialog-heading button:hover,
+.map-dialog-heading button:focus-visible,
+.header-refresh .mobile-nav > summary:hover,
+.header-refresh .mobile-nav > summary:focus-visible,
+.mobile-nav > summary:hover,
+.mobile-nav > summary:focus-visible {
+  border-color: var(--mk-red);
+  background: var(--mk-red);
+  color: #fff;
+}
+
+/* The fixed contact rail is shared across routes. Override its inherited
+   turquoise tile and status copy so it stays inside the Mobile Kitchen system. */
+.contact-rail .contact-rail-icon,
+.contact-rail-refresh .contact-rail-icon {
+  background: var(--mk-orange) !important;
+  color: #171717 !important;
+}
+.contact-rail .contact-rail-copy small,
+.contact-rail-refresh .contact-rail-copy small {
+  color: #fff !important;
+}
+.contact-rail.contact-rail-refresh:is(:hover, :focus-visible) {
+  background: #8f0000 !important;
+  border-color: #8f0000 !important;
+  box-shadow: 0 14px 32px rgb(143 0 0 / 28%);
+}
+
+/* Dark shared surfaces must explicitly establish their readable foreground.
+   The retained inventory menu inherits a dark canvas but an earlier heading
+   rule reset its strong text to ink, making it disappear on every route. */
+.services-panel-heading {
+  color: #fff !important;
+}
+.services-panel-heading strong {
+  color: #fff !important;
+}

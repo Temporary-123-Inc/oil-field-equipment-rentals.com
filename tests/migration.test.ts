@@ -1,0 +1,221 @@
+import { describe, expect, it } from "vitest";
+import {
+  authorityReleaseRoutes,
+  canonicalFor,
+  modificationDate,
+  productionBuild,
+  routeInIndexingScope,
+  routesForIndexingBatch,
+  sitemapXml,
+} from "../scripts/seo-policy";
+import { releaseErrors } from "../scripts/release";
+import { renderSourceContent } from "../scripts/source-content";
+import vercel from "../vercel.json";
+import consolidation from "../content/location-consolidation.json";
+import { readFileSync } from "node:fs";
+import { gunzipSync } from "node:zlib";
+import { createHash } from "node:crypto";
+import { load } from "cheerio";
+import site from "../site.json" with { type: "json" };
+
+describe("evidence-based city consolidation", () => {
+  it("retains source archives and only consolidates identical location articles", () => {
+    const fingerprints = new Set<string>();
+    for (const row of consolidation.routes) {
+      const source = JSON.parse(
+        gunzipSync(
+          readFileSync(
+            new URL(`../content/pages/${row.sourceFile}`, import.meta.url),
+          ),
+        ).toString(),
+      );
+      expect(source.id, row.path).toBe(row.sourceId);
+      const html = renderSourceContent(source.html, {
+        origin: "https://temporary-kitchen-rental.com",
+        routes: new Set(),
+        redirects: new Map(),
+        media: {},
+        unresolved: new Set(),
+      });
+      const escaped = (row.sourceLocation || row.location).replace(
+        /[.*+?^${}()|[\]\\]/g,
+        "\\$&",
+      );
+      const text = load(html)
+        .text()
+        .toLowerCase()
+        .replace(
+          new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "giu"),
+          "[location]",
+        )
+        .replace(/\s+/g, " ")
+        .trim();
+      fingerprints.add(createHash("sha256").update(text).digest("hex"));
+      expect(
+        vercel.redirects.find((rule) => rule.source === row.path),
+      ).toMatchObject({ destination: row.destination, permanent: true });
+    }
+    expect(fingerprints.size).toBe(1);
+  }, 30_000);
+});
+
+describe("migration indexing separation", () => {
+  it("allows the explicitly approved full public-route release on the verified canonical host", () => {
+    expect(site.indexingScope).toBe("full");
+    expect(site.domainRoutingReady).toBe(true);
+    expect(site.indexingApproval).toMatchObject({
+      scope: "all-public-static-routes",
+      approvedAt: "2026-10-03",
+    });
+    expect(releaseErrors()).toEqual([]);
+  });
+  it("keeps preview builds excluded even when editorial production mode is selected", () => {
+    expect(productionBuild("production", "preview")).toBe(false);
+    expect(productionBuild("draft", "production")).toBe(false);
+    expect(canonicalFor("/gsa-schedule/", true, false)).toBeUndefined();
+    expect(canonicalFor("/gsa-schedule/", true, true)).toBe(
+      `${site.origin}/gsa-schedule/`,
+    );
+    expect(canonicalFor("/video/", false, true)).toBeUndefined();
+    expect(() => canonicalFor("//evil.example/", true, true)).toThrow();
+  });
+  it("limits this release to current-site service-area routes", () => {
+    const scope = "homepage-and-service-areas";
+    expect(routeInIndexingScope("/", scope)).toBe(true);
+    expect(routeInIndexingScope("/service-areas/", scope)).toBe(true);
+    expect(
+      routeInIndexingScope(
+        "/service-areas/washington/olympic-peninsula/",
+        scope,
+      ),
+    ).toBe(true);
+    expect(routeInIndexingScope("/equipment-rental/", scope)).toBe(false);
+    const authorityScope = "locations-and-priority-services";
+    expect(authorityReleaseRoutes).toEqual([]);
+    expect(routeInIndexingScope("/", authorityScope)).toBe(true);
+    expect(
+      routeInIndexingScope(
+        "/houston-texas-mobile-kitchen-rental/",
+        authorityScope,
+      ),
+    ).toBe(false);
+    expect(routeInIndexingScope("/contact-us/", authorityScope)).toBe(false);
+  });
+  it("activates cumulative groups of 25 routes", () => {
+    const routes = Array.from({ length: 63 }, (_, index) => `/route-${index}/`);
+    expect(routesForIndexingBatch(routes, 1, 25)).toEqual(routes.slice(0, 25));
+    expect(routesForIndexingBatch(routes, 2, 25)).toEqual(routes.slice(0, 50));
+    expect(routesForIndexingBatch(routes, 3, 25)).toEqual(routes);
+  });
+  it("protects nonproduction hostnames, including static downloads", () => {
+    const rule = vercel.headers.find((rule) => "missing" in rule);
+    expect(rule).toMatchObject({
+      source: "/(.*)",
+      missing: [{ type: "host", value: "temporary-kitchen-rental\\.com" }],
+      headers: [{ key: "X-Robots-Tag", value: "noindex, follow" }],
+    });
+  });
+  it("permanently consolidates www requests onto the canonical host", () => {
+    expect(vercel.redirects[0]).toMatchObject({
+      source: "/:path*",
+      has: [{ type: "host", value: "www.temporary-kitchen-rental.com" }],
+      destination: `${site.origin}/:path*`,
+      permanent: true,
+    });
+  });
+  it("only emits canonical indexable production URLs and truthful modification dates", () => {
+    const pages = [
+      {
+        path: "/gsa-schedule/",
+        indexable: true,
+        modified: "2025-12-12T21:04:39",
+      },
+      { path: "/video/", indexable: false },
+      { path: "/about-us/", indexable: true },
+    ];
+    expect(sitemapXml(pages, false)).not.toContain("<url>");
+    const xml = sitemapXml(pages, true);
+    expect(xml).toMatch(
+      /^<\?xml version="1\.0" encoding="UTF-8"\?>\n<urlset xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9">\n/s,
+    );
+    expect(xml).toContain("  <url>\n    <loc>https://temporary-kitchen-rental.com/gsa-schedule/</loc>");
+    expect(xml).toContain("<lastmod>2025-12-12</lastmod>");
+    expect(xml).not.toContain("/video/");
+    expect((xml.match(/<lastmod>/g) || []).length).toBe(1);
+    expect(modificationDate("2025-02-30")).toBeUndefined();
+    expect(modificationDate("2099-01-01")).toBeUndefined();
+  });
+});
+
+describe("preserve source meaning while repairing navigation", () => {
+  const options = () => ({
+    origin: "https://temporary-kitchen-rental.com",
+    routes: new Set(["/service-areas/", "/equipment-rental/"]),
+    redirects: new Map([["/shop/", "/equipment-rental/"]]),
+    media: {},
+    unresolved: new Set<string>(),
+  });
+  it("removes only repeated directory sections, retaining the later business section", () => {
+    const result = renderSourceContent(
+      '<p>Original local details</p><h2>TOP 100 BIG CITIES THAT WE SERVED</h2>Mobile Kitchen Trailers in <p><a href="/missing-city/">City</a></p> – GSA Schedule Service Available<!-- directory footer --><h2>Equipment specifications</h2><p>Original dimensions</p>',
+      options(),
+    );
+    expect(result).toContain("Original local details");
+    expect(result).toContain("Original dimensions");
+    expect(result).toContain("/service-areas/");
+    expect(result).not.toContain("/missing-city/");
+    expect(result).not.toContain("Mobile Kitchen Trailers in");
+    expect(result).not.toContain("GSA Schedule Service Available");
+    expect(result).not.toContain("directory footer");
+  });
+  it("normalizes known destinations, preserves query strings and records unrecovered pages", () => {
+    const settings = options();
+    const result = renderSourceContent(
+      '<a href="https://www.temporary-kitchen-rental.com/shop/?type=long#rent">Equipment</a><a href="/testimonials/">Testimonials</a>',
+      settings,
+    );
+    expect(result).toContain("/equipment-rental/?type=long#rent");
+    expect(result).toContain("Testimonials");
+    expect(result).toContain('data-unavailable-path="/testimonials/"');
+    expect(result).not.toContain('href="/testimonials/"');
+    expect(settings.unresolved.has("/testimonials/")).toBe(true);
+  });
+  it("removes empty figures left by unavailable remote media", () => {
+    const settings = options();
+    const result = renderSourceContent(
+      '<figure><img src="https://remote.example/missing.jpg"></figure><figure><figcaption>Preserved caption</figcaption></figure>',
+      settings,
+    );
+    expect(result).not.toContain("<figure></figure>");
+    expect(result).toContain("Preserved caption");
+    expect(settings.unresolved.has("https://remote.example/missing.jpg")).toBe(
+      true,
+    );
+  });
+  it("collapses pathological archived break runs without joining real content", () => {
+    const result = renderSourceContent(
+      `<p>Before</p>${"<br>".repeat(100)}<p>After</p>`,
+      options(),
+    );
+    expect(result).toContain("<p>Before</p><br><br><p>After</p>");
+    expect(result.match(/<br>/g)).toHaveLength(2);
+  });
+  it("replaces migrated placeholder image labels with verified descriptions", () => {
+    const settings = {
+      ...options(),
+      media: {
+        "https://legacy.example/kitchen.png": {
+          local: "/media/30edc5b4ac0956615e579ab5.png",
+        },
+      },
+    };
+    const result = renderSourceContent(
+      '<img src="https://legacy.example/kitchen.png" alt="Your paragraph text">',
+      settings,
+    );
+    expect(result).toContain(
+      'alt="Commercial mobile kitchen trailer interior with stainless-steel ventilation hoods and cooking equipment"',
+    );
+    expect(result).not.toContain("Your paragraph text");
+  });
+});

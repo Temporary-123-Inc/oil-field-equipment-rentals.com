@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-labelledby="title desc">
+  <title id="title">Temporary Kitchen Rental</title>
+  <desc id="desc">Mobile kitchen trailer mark.</desc>
+  <rect width="180" height="180" rx="34" fill="#f4f7f5"/>
+  <g transform="translate(5 16)">
+    <rect x="8" y="91" width="154" height="49" rx="13" fill="#0b3948"/>
+    <path d="M0 91h170l-10-25H10z" fill="#1ea6b8"/>
+    <path d="M17 103h135v25H17z" fill="#f4f7f5"/>
+    <path d="M35 113h35v8H35zm64 0h40v8H99z" fill="#0b3948"/>
+    <circle cx="146" cy="118" r="5" fill="#f1a63a"/>
+    <path d="M29 66V35h39v31" fill="#f1a63a" stroke="#0b3948" stroke-width="7"/>
+    <circle cx="42" cy="47" r="4" fill="#0b3948"/><circle cx="56" cy="47" r="4" fill="#0b3948"/>
+    <circle cx="42" cy="59" r="4" fill="#0b3948"/><circle cx="56" cy="59" r="4" fill="#0b3948"/>
+    <path d="M83 66c2-19 28-24 40-9 8-9 23-5 26 9" fill="#f2644a" stroke="#0b3948" stroke-width="7" stroke-linejoin="round"/>
+    <path d="M96 49c-5-11 8-13 3-23m15 23c-5-11 8-13 3-23" fill="none" stroke="#1ea6b8" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</svg>

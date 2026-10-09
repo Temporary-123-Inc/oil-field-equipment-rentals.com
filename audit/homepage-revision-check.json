@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-02T20:51:07.747Z",
+  "htmlPages": 665,
+  "localLinks": 81767,
+  "localImages": 12427,
+  "uniqueTitles": 665,
+  "uniqueDescriptions": 665,
+  "linkedRoutes": 665,
+  "problems": [],
+  "pendingMigrationLinks": [],
+  "restoredAssets": 186,
+  "migration": {
+    "source": "https://temporary-kitchen-rental.com",
+    "expected": 98253,
+    "recovered": 625,
+    "complete": false,
+    "checkedAt": "2026-09-11T16:39:23.031Z"
+  },
+  "launchReady": true,
+  "indexing": "658 approved routes emit index,follow, self-canonicals and sitemap entries. Other routes remain noindex."
+}
