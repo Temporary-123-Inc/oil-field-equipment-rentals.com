@@ -2,3 +2,6 @@ node_modules/
 dist/
 .reference-source/
 .sites-runtime/
+
+.vercel
+.env*
