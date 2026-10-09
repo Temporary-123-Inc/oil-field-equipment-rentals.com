@@ -502,4 +502,29 @@ p { font-family: var(--body); }
     padding-inline: max(1rem, calc((100vw - 680px) / 2));
   }
   .hero-note { box-shadow: 5px 5px 0 rgb(255 255 255 / 20%); }
+  .hero-copy h1,
+  .page-intro h1,
+  .service-hero-grid h1,
+  .inventory-model-hero-grid h1,
+  .inventory-category-hero .service-hero-grid h1,
+  .section-head h2,
+  .map-heading h2,
+  .directory-head h2,
+  .process-sticky h2,
+  .supporting-grid h2,
+  .faq-grid h2,
+  .two-column h2,
+  .case-study-copy h2,
+  .state-detail-grid h2,
+  .calculator-grid h2,
+  .content-writing-grid h2,
+  .contact-page-grid h2,
+  .state-modal-grid h2,
+  .contact-modal-grid h2,
+  .inventory-model-information h2,
+  .inventory-model-planning h2,
+  .inventory-availability h2,
+  .inventory-support-note h2,
+  .service-grid-cta h3,
+  .cta-band h2 { max-width: none; }
 }

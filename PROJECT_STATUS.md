@@ -342,3 +342,10 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - Local evidence: refreshed 1440 px full-page captures for Mancamp and Services plus a 390 px Mancamp capture; `git diff --check` and `npm run build` pass. Existing large-client-chunk warning remains.
 - Deployment state: commit `4f90e4d` is pushed to GitHub main and deployed as Ready production deployment `dpl_BMAygrfGs68nMTrhBs479nUk9nAE` at protected preview `https://oil-field-equipment-rentals-qqzwwmuq9-temporary-124.vercel.app`; Vercel aliased it to `https://oil-field-equipment-rentals.com`. Protected checks returned the new CSS/JS assets for `/mancamp/` and `/services/`, and the last-hour Vercel error scan returned no logs. The custom domain's external DNS/Cloudflare cutover remains unverified.
 
+## 2026-10-09 — Responsive heading width sweep
+
+- Removed inherited desktop `max-width` caps from display headings inside layouts that collapse to one column below 860px. This includes the Key West case-study heading, responsive heroes, section heads, calculator/contact/modal headings, process/supporting blocks, inventory headings, and shared CTA headings.
+- Local visual evidence: full-page Chrome captures for Key West at 675px, calculator at 675px, and Contact at 390px show headings using the available column width; the reported Key West case-study heading now spans the stacked content column instead of clumping at the left edge.
+- Automated responsive evidence: homepage, Key West, calculator, and Contact checked at 390px, 675px, and 768px; every sampled heading reported `max-width: none` after the responsive breakpoint and all routes had `document.documentElement.scrollWidth === window.innerWidth`.
+- `git diff --check` and `npm run build` pass. The existing Vite large-client-chunk warning remains non-blocking. Deployment follows after commit and protected production verification.
+

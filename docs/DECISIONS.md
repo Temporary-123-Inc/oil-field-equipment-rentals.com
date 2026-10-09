@@ -767,3 +767,8 @@ The supplied restroom-only interior set may appear on the registered 12 ft, 14 f
 - Standalone page-intro and CTA sections should let the display heading use the available content width, with balanced wrapping, when no right-side module is present.
 - Keep narrow display caps in hero, process, calculator, contact, case-study, and other paired layouts where the empty-looking space is intentionally occupied by a visual, form, list, or source panel.
 
+## 2026-10-09 — Remove desktop heading caps after responsive layouts stack
+
+- When a layout collapses to one column below 860px, display headings in the collapsed content flow must use the available width rather than retaining desktop `ch` caps. This prevents case-study, calculator, contact, modal, process, and CTA headlines from forming tall left-side stacks with unused space on the right.
+- Preserve the desktop caps while paired modules remain side by side; this is a responsive layout rule, not a blanket removal of display-heading hierarchy.
+
