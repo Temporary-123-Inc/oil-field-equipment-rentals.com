@@ -190,7 +190,7 @@ const inventoryRouteMap = Object.fromEntries([
 
 const serviceH1 = {
   'mobile-kitchen-trailers': 'Mobile Kitchen Trailer Rentals for Temporary Commercial Food Service',
-  'dishwashing-trailers': 'Commercial Dishwashing Trailer Rentals for Temporary Kitchen Operations',
+  'dishwashing-trailers': 'Commercial Dishwashing Trailer Rentals for Temporary Food-Service Operations',
   'refrigeration-trailers': 'Refrigerated Trailer Rentals for Temporary Commercial Cold Storage',
   'shower-trailers': 'Portable Shower Trailer Rentals for Temporary Site Facilities',
   'restroom-trailers': 'Mobile Restroom Trailer Rentals for Temporary Site Facilities',

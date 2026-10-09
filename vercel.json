@@ -43,17 +43,6 @@
   ],
   "redirects": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.temporary-kitchen-rental.com"
-        }
-      ],
-      "destination": "https://temporary-kitchen-rental.com/:path*",
-      "permanent": true
-    },
-    {
       "source": "/basecamp/",
       "destination": "/mancamp/",
       "permanent": true
