@@ -6,6 +6,7 @@
 - Copy — PASS: the paragraph leads with nationwide availability, names Houston, Dallas, Austin, Phoenix, Atlanta, Denver, and Charlotte as representative active development/construction/renovation markets, then returns to state/city guides and exact-site confirmation.
 - Build — PASS: `npm run build` generated 347 sitemap URLs and 379 direct route shells; `git diff --check` passed. Existing large-client-chunk warning remains.
 - Browser boundary — local Playwright browser verification was attempted but blocked because the Chromium executable is not installed in the workspace. Source/build verification passed; no live deployment verification is claimed in this entry.
+- Deployment — PASS: production deployment `dpl_DYABZWPFZDZShtqS2X7Fcjjxf5gz` reached `READY`; protected Vercel curl returned HTTP 200 for `/` and `/service-areas/`, and `vercel logs --level error --since 1h` returned no logs. The preview/deployment hostname correctly sends `X-Robots-Tag: noindex, follow`; custom-domain indexing/rendering remains pending the existing Cloudflare/DNS boundary.
 
 ## 2026-10-09 — Direct state/city route fallback
 
