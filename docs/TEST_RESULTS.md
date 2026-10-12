@@ -6,7 +6,8 @@
 - Editorial safety — PASS: Birmingham's updated subtitle and incident analysis identify the hospital acquisition as reported context, explicitly state that construction, renovation, closures, and a temporary-facility requirement are not confirmed, and frame future mancamp needs as a possible planning scenario. The five edge-case subtitles now use the same conditional treatment where their references do not confirm a current local facility need.
 - JSON validation — PASS: all 296 location records parse successfully; the updated record contains the required conditional wording and existing `[PHONE]`/`[STARTING PRICE]` tokens for render-time replacement.
 - Build — PASS: `npm run build` generated 347 sitemap URLs and 379 direct route shells; existing large-client-chunk warning remains. `git diff --check` passed.
-- Browser/deployment — PENDING: local Chromium is not installed for automated browser verification, and this content change has not yet been deployed.
+- Browser — BOUNDARY: local Chromium is not installed for automated browser verification.
+- Deployment — PASS: preview deployment `dpl_8Zag1f8SYzkdaQPYEXHfbVsUp726` reached `READY` and was promoted to production as `dpl_38xa3qdhtHHwXaQCxJhNfCJGdkm1`. Protected Vercel curl returned HTTP 200 for `/service-areas/alabama/birmingham/`, `/service-areas/alabama/`, and `/service-areas/florida/key-west/`; the preview/deployment hostname correctly sent `X-Robots-Tag: noindex, follow`, and the last-hour production error scan returned no logs. The custom domain remains behind the existing Cloudflare/DNS boundary.
 
 ## 2026-10-13 — Nationwide coverage copy refinement
 
