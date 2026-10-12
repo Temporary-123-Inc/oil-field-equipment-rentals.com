@@ -1,5 +1,11 @@
 # TemporaryKitchenRental Decision Log
 
+## 2026-10-13 — Consolidate nationwide coverage copy
+
+- Use one shared coverage description for the homepage and Service Areas page because both render the same `CoverageMap` component. This prevents the two entry points from drifting.
+- Lead with nationwide availability, use seven representative markets as examples rather than an exhaustive service boundary, and finish with the state/city guide and exact-site confirmation path.
+- Keep the city list limited to markets already represented in the service-area data; do not imply that other states or cities are unavailable.
+
 ## 2026-10-09 — Use a root SPA rewrite for direct location links
 
 - Keep the state-directory and modal city links as normal anchors so Ctrl/Cmd-click, copy-link, and client-side navigation all use the same canonical URL.
@@ -784,4 +790,26 @@ The supplied restroom-only interior set may appear on the registered 12 ft, 14 f
 - Treat Temporary Kitchen Rental as historical source/migration context only. The deployed product identity, package metadata, active copy, source labels, canonical URLs, and indexing policy belong to Oil Field Equipment Rentals.
 - Reuse page structure and relevant inventory concepts where they fit the Oil Field offering, but do not preserve the prior brand, prior domain redirects, or prior brand language in the active runtime.
 - Preview deployment hosts remain noindex for safe review. The production Oil Field custom domain must be indexable; therefore the Vercel `X-Robots-Tag` rule is matched to `*.vercel.app` preview hosts rather than using an exception for the former domain.
+
+## 2026-10-12 — Regional coverage stays inside the existing descriptions
+
+- Add regional service-coverage cities to the existing below-H1 description paragraph, preserving the original copy and CTA. Do not create a new module, element, or paragraph.
+- Applied the approved pattern to all 246 existing regional records; the Huntsville page remains the representative preview before release.
+
+## 2026-10-12 — Use the owner's copy-refresh guideline on actual rendered fields
+
+- `SKILL (2).md` guides the requested rewrite of service-area `subtitle` and `incidentAnalysis`, beginning with Huntsville. Preserve the existing article references and token system; write historical reports as history and distinguish hypothetical rental needs from sourced events.
+- Existing modals use state records. The pilot therefore also updates Alabama's shared description and analysis, rather than creating a city modal or changing component structure. The remaining state and regional records will follow after the requested pilot review.
+
+## 2026-10-12 — Apply the approved pilot without manufacturing local evidence
+
+- The owner's pilot approval authorizes the remaining 294 existing subtitle/analysis pairs, not article replacement, additional records, new UI or deployment. Preserve Alabama and North Alabama as approved.
+- Lead with offered geographic service and distinguish it from inventory, delivery dates and package pricing. Select nearby names already in service coverage, screened against Census geography; omit uncertain neighbors on sparse/remote rows.
+- Do not recast denied, proposed, financed, acquired or completed projects as ongoing construction. Permanent-job estimates are not contractor headcounts. Rental applications remain conditional and do not imply the cited organization was a customer.
+- Original articles that were not read and weak or mismatched references are explicit source-review boundaries. Keep stored titles/dates/URLs unchanged and log each flag; this local copy refresh is not certification of all articles. A stronger-source workstream requires separate scope before those reference fields are replaced.
+
+## 2026-10-12 — Release the approved copy refresh to production
+
+- Deploy the existing working-tree copy refresh to the linked Vercel production project after the full repository build passes. Do not push the local coordination-document changes to GitHub as part of this release.
+- Production deployment `dpl_AR2yRDDntCPiGBD8vBd7yehSdgEP` is the released build and remains subject to the documented 271-record source-review boundary. The custom domain's Cloudflare challenge is an existing verification boundary, not evidence that the deployment failed.
 

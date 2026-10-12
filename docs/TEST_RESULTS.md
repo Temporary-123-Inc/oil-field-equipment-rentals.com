@@ -1,5 +1,12 @@
 # TemporaryKitchenRental Test Results
 
+## 2026-10-13 — Nationwide coverage copy refinement
+
+- Scope — PASS: one shared `nationwideCoverageDescription` is rendered by the CoverageMap used on both `/` and `/service-areas/`; map state selection, directory links, modal behavior, and routes were not changed.
+- Copy — PASS: the paragraph leads with nationwide availability, names Houston, Dallas, Austin, Phoenix, Atlanta, Denver, and Charlotte as representative active development/construction/renovation markets, then returns to state/city guides and exact-site confirmation.
+- Build — PASS: `npm run build` generated 347 sitemap URLs and 379 direct route shells; `git diff --check` passed. Existing large-client-chunk warning remains.
+- Browser boundary — local Playwright browser verification was attempted but blocked because the Chromium executable is not installed in the workspace. Source/build verification passed; no live deployment verification is claimed in this entry.
+
 ## 2026-10-09 — Direct state/city route fallback
 
 - Root cause — CONFIRMED: client-side clicks worked, but direct production requests to `/service-areas/.../` returned Vercel `NOT_FOUND` because the catch-all rewrite used `/:path* -> /index.html`.
@@ -1289,3 +1296,353 @@ Build finished: 651 pages + 404 prerendered. Static localhost preview at http://
 - Deployment — PASS: commit `7ed9ea4` is pushed to main; production deployment `dpl_Huu31eZbXxCpQkjG5Pj4AELV2ffv` reached Ready and is aliased to `https://oil-field-equipment-rentals.com`. Vercel error logs for the deployment returned no entries.
 - Boundary — direct custom-domain verification is blocked by the current Cloudflare 403 challenge. No Cloudflare/DNS changes were made.
 
+## 2026-10-12 — Regional description coverage rollout
+
+- Source scope — PASS: edited only the existing `subtitle` fields for the 246 `scope: "region"` records in `src/data/locationContent.json`.
+- Copy — PASS: preserved every original description and appended each region’s assigned city coverage in the same paragraph using site-dependent availability and delivery wording.
+- Data audit — PASS: 246 regional records found, 246 updated with coverage wording, 0 empty descriptions.
+- Browser preview — PASS: local `/service-areas/alabama/huntsville/` rendered the updated sentence directly above the existing `REQUEST AVAILABILITY` CTA; no new module or paragraph appeared.
+- `git diff --check` — PASS.
+- `npx vite build` — PASS: Vite production build completed with the existing large-client-chunk warning.
+- Deployment — NOT PERFORMED: awaiting approval before release.
+
+## 2026-10-12 — Guideline-based Huntsville and Alabama copy pilot
+
+- Mapping: `src/main.jsx` resolves the existing hero from `subtitle`, the existing Case Study from `incidentAnalysis`, and the state-modal paragraph from the same state subtitle. There is no Huntsville-specific modal; Alabama is the relevant existing modal.
+- Scope: two records examined and updated, four text fields rewritten, 294 records unchanged by this pilot, zero records flagged for weak article relevance. Earlier regional coverage changes remain intact on all other records. Article references, IDs, dates, H1s, prices, media, templates, and routes were preserved.
+- Source facts read directly: [AL.com campus roundup, June 28, 2019](https://www.al.com/news/g66l-2019/06/1e661efe383221/more-construction-projects-at-alabama-college-and-university-campuses-2019.html) describes UAH Morton Hall renovation/expansion and Alabama A&M Thigpen Hall's completed renovation. [Construction Review, updated September 30, 2026](https://constructionreviewonline.com/alabama-authorizes-construction-of-3-2b-mobile-river-bridge-and-bayway-project/) describes the Mobile River Bridge and Bayway authorization and planned scope. Rental scenarios are conditional, not claims of customer participation or ongoing historical work.
+- Geography: Madison, Athens, and Decatur are listed in the repository's Alabama calculator coverage; their regional relationship was cross-checked against Huntsville-area government/Chamber information. The pilot uses three nearby cities as directed by the supplied guidelines.
+- Preservation audit: 296 total records unchanged; SHA-256 of all data excluding the four authorized fields remains `67ac90bf5b698c5ead2ce7449feb3c2c0fa7075db784712f8d24623dcee6d4d6`. Both descriptions retain one `[PHONE]` and one `[STARTING PRICE]`; both analyses retain a `[PHONE]` CTA and 24/7 availability.
+- Browser: Huntsville's existing hero and three Case Study paragraphs render the rewritten text; the H1 stays `Temporary remote mancamp facility rentals in Huntsville, Alabama`. Phone `888-385-5513` and component anchor `$5,357` resolve; no token leak or horizontal overflow detected. Alabama's page and modal share the rewritten description, resolving the state price to `$5,952`.
+- Build: `npx vite build --outDir .temp/huntsville-copy-preview-build` completed successfully, retaining the existing large-client-chunk warning. `git diff --check` passes. Temporary build output was moved to the chat's visualization directory after verification and remains recoverable there.
+- Preview captures saved outside the source repository in the chat's visualization directory: `huntsville-copy-pilot.jpg`, `huntsville-description-pilot.jpg`, and `alabama-modal-copy-pilot.jpg`.
+- Source-link boundary: the retained Google News URL for Huntsville did not resolve during this check; the original AL.com article was located and read directly. Its stored reference was preserved as requested. No broader source or page refresh and no deployment performed yet.
+
+
+## 2026-10-12 — Approved service-area copy refresh, remaining records
+
+- Scope examined: all 296 existing rows (50 states, 246 regions). Updated 294 rows in `src/data/locationContent.json`, changing only `subtitle` and `incidentAnalysis`. The two approved Alabama/North Alabama pilot records remain byte-for-byte equivalent as parsed objects. State modals inherit state descriptions; no modal/component/template edits were needed.
+- Preservation: all other keys, values, IDs/location keys, ordering, title/date/source URLs, schema and row counts match the pre-rollout snapshot. SHA-256 of all rows excluding the two authorized fields: `4f8e81badb4a265dabb8fca609256ee1d227d27c8c03fe4c1e9bcb792d275a41`. Contact/price/24/7 checks pass on every row. No unresolved authoring macros or former “active development phase” filler remain. All 296 subtitles and analyses are individually distinct, although common service/contact wording legitimately recurs. This uniqueness check is not an independent editorial-quality certification.
+- Geography: used existing calculator-service coverage names with [Census 2025 Places Gazetteer](https://www.census.gov/geographies/reference-files/2025/geo/gazetter-file.html) internal-point coordinates to screen same-state proximity, generally within 25 straight-line miles. These are not road-distance or delivery estimates. Consolidated municipality names were matched explicitly. San Francisco's water-inclusive internal point required regional mapping checks via [MTC](https://mtc.ca.gov/sites/default/files/Final_Plan_Bay_Area_2040.pdf); its nearby coverage uses Oakland, Daly City and South San Francisco. All selected names match existing service coverage under normalized spelling. Canyon, Texas is rendered with its normal place name rather than the calculator's “Canyon City” alias. Remote/sparse coverage rows omit unverified nearby names rather than invent adjacent cities: Arctic, Alaska; Central Nevada, Nevada; Eastern Plains, Colorado; Missouri River Country, Montana; Northeast New Mexico, New Mexico; Sandhills, Nebraska; Southcentral, Alaska; Southeast, Alaska; Southeastern Utah, Utah; Southwest, Alaska; Western North Dakota, North Dakota.
+- Source limits: 271 records are flagged, comprising 269 whose full original article was not independently read and two with retrieved evidence requiring contextual caution (Town Branch Commons is a retrospective study; Aternium's stored headline implies opening while the company announcement describes site selection). Unread-report text is limited to supplied title/date topics and explicitly separates possible rental uses. Weak, residential, unrelated or geographically mismatched references are identified instead of fabricated as local construction. Existing source cards/URLs were retained; stronger source replacements and full article review are outstanding, not completed or authorized by this copy-only task.
+- Build: isolated `npx vite build --outDir C:/Users/Admin/.codex/visualizations/2026/10/12/01a12f32-c37a-7a92-a2ee-d4c9e4407fe6/service-area-copy-refresh-build` succeeded, 1591 modules, with the existing >500 kB client-chunk warning. Generated sitemap/production output was not rewritten. `git diff --check` passes.
+- Browser: Albuquerque, Idaho Falls, Erie, Norfolk and Dothan each display the new paragraph directly under the unchanged H1, three analysis paragraphs in the existing Case Study, resolved phone/price tokens and no horizontal overflow at the browser's 1265 × 720 viewport. Pennsylvania's state page displays its updated subtitle and two analysis paragraphs; selecting Pennsylvania opens its existing modal with exactly the state description and resolved $5,952 anchor. Huntsville still renders the approved pilot. These are sample checks, not browser inspection of all 296 pages.
+- Preview server: restarted the expired prior process on 127.0.0.1:5173 (Vite session 39897); fresh browser verification succeeds. Erie is left open with the description visible. Capture: `C:/Users/Admin/.codex/visualizations/2026/10/12/01a12f32-c37a-7a92-a2ee-d4c9e4407fe6/service-area-copy-erie.jpg`.
+- No push, publication, indexing action, deployment, new route, article, module, schema field, or page was performed. Production is not claimed to contain this refresh.
+
+### Retrieved supporting evidence for this rollout
+
+- Acadiana, Louisiana: [retrieved supporting source](https://www.opportunitylouisiana.gov/news/dmr-technologies-to-launch-full-scale-u-s-drone-manufacturing-facility-in-lafayette).
+- Alaska: [retrieved supporting source](https://constructionreviewonline.com/us-unveils-plans-for-first-new-coal-power-plant-since-2013-the-alaska-coal-power-plant-project/).
+- Albuquerque area, New Mexico: [retrieved supporting source](https://hscnews.unm.edu/news/unm-hospitals-new-and-expanded-childrens-psychiatric-center-brings-enhanced-behavioral-healthcare-for-new-mexicos-children-and-adolescents).
+- Arctic, Alaska: [retrieved supporting source](https://www.ktoo.org/2024/01/30/alaska-is-short-on-gravel-and-long-on-development-projects/).
+- Arizona: [retrieved supporting source](https://news.constructconnect.com/asu-launches-hundreds-of-millions-in-campus-construction-projects).
+- Arkansas: [retrieved supporting source](https://www.avaiodigital.com/developments/little-rock-arkansas).
+- Arkansas River Valley, Arkansas: [retrieved supporting source](https://arkansasadvocate.com/2026/08/11/outside-of-little-rock-arkansas-counties-and-cities-move-ahead-on-data-center-moratoriums/).
+- Aroostook County, Maine: [retrieved supporting source](https://www.datacenterdynamics.com/en/news/data-center-to-be-built-at-former-air-force-base-in-aroostook-county-maine/).
+- Bay Area, California: [retrieved supporting source](https://yieldpro.com/2025/01/the-refuge/).
+- Bluegrass region, Kentucky: [retrieved supporting source](https://uknow.uky.edu/research/uk-landscape-architecture-faculty-students-contribute-success-town-branch-commons).
+- California: [retrieved supporting source](https://www.walshgroup.com/news/2026/walshconstructionbreaksgroundoncarpinteriaadvancedpurificationproject.html).
+- Capital Region, Louisiana: [retrieved supporting source](https://hf8d0vdx22d5pwzfubwk96che.js.wpenginepowered.com/news/hut-8-selects-southeast-louisiana-as-site-of-10-billion-artificial-intelligence-data-center).
+- Central Delaware, Delaware: [retrieved supporting source](https://aternium.com/category/press-releases/).
+- Central Montana, Montana: [retrieved supporting source](https://mdtnews.mt.gov/news/news-folder/2026/06/20260602-Timber-bridge-construction-near-Lewistown).
+- Central Washington, Washington: [retrieved supporting source](https://www.cwu.edu/about/media-resources/news/2026/09/cwu-to-unveil-new-arts-and-humanities-focused-building-on-october-2.php).
+- Dartmouth Lake Sunapee, New Hampshire: [retrieved supporting source](https://trustees.dartmouth.edu/news/2025/09/historic-gift-shonda-rhimes-91-names-residence-hall).
+- Eastern Idaho, Idaho: [retrieved supporting source](https://inl.gov/feature-story/inl-celebrates-legacy-project-at-college-of-eastern-idaho/).
+- Eastern Shore, Maryland: [retrieved supporting source](https://www.umms.org/shore/news/2024/um-shore-regional-medical-center-groundbreaking).
+- Erie region, Pennsylvania: [retrieved supporting source](https://behrend.psu.edu/story/94446/2026/09/18/trustees-approve-plans-19-million-penn-state-behrend-manufacturing-center).
+- Hampton Roads, Virginia: [retrieved supporting source](https://myemail.constantcontact.com/HRBT-Expansion-Project-Reaches-Critical-Milestone.html?aid=Gc9zGzDmS7E&soid=1132998776519).
+- Maryland: [retrieved supporting source](https://umterps.com/news/2026/4/13/mens-lacrosse-mens-lacrosse-facility-project-moves-forward-construction-starts-june).
+- Mississippi: [retrieved supporting source](https://olemiss.edu/news/2026/08/ole-miss-campus-takes-shape-with-major-construction-projects/index.html).
+- Nebraska: [retrieved supporting source](https://www.niocorp.com/niocorp-launches-construction-of-elk-creek-critical-minerals-project-mine-portal/).
+- North Cascades, Washington: [retrieved supporting source](https://wsdot.wa.gov/construction-planning/search-projects/sr-20-north-cascades-highway-emergency-repairs-completed-june-2026).
+- Wiregrass, Alabama: [retrieved supporting source](https://www.madeinalabama.com/2026/03/construction-partners-to-invest-20-million-in-new-dothan-headquarters/).
+
+### Source-review flags — original article not independently read
+
+The following 269 rows require original-source review before being represented as fully verified local case studies. Reference metadata remains unchanged.
+
+- Berkshires, Massachusetts: Residential article; unsuitable commercial/institutional case study.
+- Black Hills and Badlands, South Dakota: Full report unread; rejected proposal, not active construction.
+- Blackstone Valley, Rhode Island: Full report unread; scope/status requires article review.
+- Capital Region, Maryland: General design article; stronger local project source needed.
+- Capital Region, New York: Summary limited to supplied authority title/date; full notice not read.
+- Central Alabama, Alabama: Acquisition, not construction; full article not read.
+- Central Florida, Florida: General construction research; no verified local project.
+- Central Georgia, Georgia: Multi-topic roundup; specific local incident requires verification.
+- Central Illinois, Illinois: Full source unread; funding and geography must not imply Springfield construction.
+- Central Indiana, Indiana: Broad industry feature; stronger named project source needed.
+- Central Iowa, Iowa: Full report unread; no traffic or current-work claims.
+- Central Jersey, New Jersey: Residential-development overview; no verified commercial facility interruption.
+- Central Maryland, Maryland: Unrelated news roundup; no Baltimore rental connection.
+- Central Massachusetts, Massachusetts: Full planning report unread; project identity and decisions need verification.
+- Central Minnesota, Minnesota: Full historical report unread; no present status asserted.
+- Central Mississippi, Mississippi: Multi-project report unread; Jackson-specific relevance unverified.
+- Central Missouri, Missouri: Historical project outside Columbia; full source unread.
+- Central Mountains, Idaho: Caldwell article assigned to Central Mountains; geographic mismatch.
+- Central Nebraska, Nebraska: Summary limited to supplied title/date; full report not independently read.
+- Central Nevada, Nevada: Acquisition/risk commentary; no verified construction incident.
+- Central New York, New York: Summary limited to supplied title/date; full report not independently read.
+- Central Ohio, Ohio: Summary limited to supplied title/date; full report not independently read.
+- Central Oklahoma, Oklahoma: Summary limited to supplied title/date; full report not independently read.
+- Central Oregon, Oregon: Summary limited to supplied title/date; full report not independently read.
+- Central Pennsylvania, Pennsylvania: Summary limited to supplied title/date; full report not independently read.
+- Central South Dakota, South Dakota: Multi-project overview; local operational details not verified.
+- Central Texas, Texas: Company expansion; no specific facility gap documented.
+- Central Utah, Utah: Proposed project; current approval and construction status unverified.
+- Central Valley, California: Historical multi-project portfolio; specific local gap not verified.
+- Central Vermont, Vermont: Summary limited to supplied title/date; full report not independently read.
+- Central Virginia, Virginia: Industry trend article; named local project needed.
+- Central Wisconsin, Wisconsin: Summary limited to supplied title/date; full report not independently read.
+- Central Wyoming, Wyoming: Jackson project assigned to Casper/Central Wyoming; geographic mismatch.
+- Champlain Valley, Vermont: Summary limited to supplied title/date; full report not independently read.
+- Charlotte region, North Carolina: Residential model-home promotion; unsuitable case source.
+- Chicago area, Illinois: Summary limited to supplied title/date; full report not independently read.
+- Coastal Georgia, Georgia: Contested proposal; locality and current project status require verification.
+- Coastal Plain, North Carolina: Private-well contamination study; no verified crew-facility case.
+- Colorado: Summary limited to supplied title/date; full report not independently read.
+- Connecticut: Summary limited to supplied title/date; full report not independently read.
+- Connecticut River Valley, Connecticut: I-89 river crossing outside Connecticut; geographic mismatch.
+- Connecticut Shoreline, Connecticut: Property sale; no construction gap documented.
+- Cumberland Plateau, Tennessee: Policy/opposition story; construction and local relevance unverified.
+- Delaware: Statewide roundup; individual projects and rental need unverified.
+- Delaware Beaches, Delaware: Summary limited to supplied title/date; full report not independently read.
+- Delaware River Region, New Jersey: Summary limited to supplied title/date; full report not independently read.
+- Delta, Arkansas: Summary limited to supplied title/date; full report not independently read.
+- Delta, Mississippi: Proposed environmental-impact story; operational need unverified.
+- DownEast and Acadia, Maine: Summary limited to supplied title/date; full report not independently read.
+- Driftless Area, Wisconsin: Possible development; approval and local worksite unverified.
+- East Tennessee, Tennessee: Wilson County/Middle Tennessee article assigned to East Tennessee.
+- East Texas, Texas: Water-planning dispute; no construction or facility interruption verified.
+- Eastern Kentucky, Kentucky: Project relocated out of Kentucky; no local construction case.
+- Eastern Oregon, Oregon: Policy/trend story; named local project needed.
+- Eastern Panhandle, West Virginia: Limited to supplied title/date; full report not independently read.
+- Eastern Plains, Colorado: Northern Colorado project; specific Eastern Plains locality unverified.
+- Eastern Shore, Virginia: Limited to supplied title/date; full report not independently read.
+- Eastern Washington, Washington: Residential market overview; no workforce-facility case.
+- Finger Lakes, New York: Limited to supplied title/date; full report not independently read.
+- Florida: Limited to supplied title/date; full report not independently read.
+- Florida Keys, Florida: Healthcare-service announcement; construction interruption not established.
+- Fox Valley, Wisconsin: Company division launch; no specific local incident.
+- Front Range, Colorado: Limited to supplied title/date; full report not independently read.
+- Gateway Region, New Jersey: Acquisition financing; no construction gap established.
+- Georgia: Limited to supplied title/date; full report not independently read.
+- Glacial Lakes and Prairies, South Dakota: Historical landowner/legal dispute; operational need not verified.
+- Glacier Country, Montana: Limited to supplied title/date; full report not independently read.
+- Great North Woods, New Hampshire: Gingerbread baking story; unrelated to real construction.
+- Greater Boston, Massachusetts: Regional portfolio; no verified Boston-specific incident.
+- Greater Hartford, Connecticut: Residential displacement; no supported commercial rental deployment.
+- Greater New Orleans, Louisiana: Limited to supplied title/date; full report not independently read.
+- Green Country, Oklahoma: Limited to supplied title/date; full report not independently read.
+- Gulf Coast, Alabama: Limited to supplied title/date; full report not independently read.
+- Gulf Coast, Mississippi: Limited to supplied title/date; full report not independently read.
+- Gulf Coast, Texas: Leadership/business news; no project-specific rental case.
+- Hawaii: Limited to supplied title/date; full report not independently read.
+- Hawaii Island, Hawaii: Challenged proposal; exact site and status unverified.
+- Highlands, Maine: Limited to supplied title/date; full report not independently read.
+- Hills, Mississippi: Arkansas article assigned to Mississippi Hills; geographic mismatch.
+- Hudson Valley, New York: Limited to supplied title/date; full report not independently read.
+- Idaho: Limited to supplied title/date; full report not independently read.
+- Illinois: Limited to supplied title/date; full report not independently read.
+- Indiana: Limited to supplied title/date; full report not independently read.
+- Inland Empire, California: Dallas hotel article assigned to Inland Empire, California.
+- Interior, Alaska: Limited to supplied title/date; full report not independently read.
+- Iowa: Limited to supplied title/date; full report not independently read.
+- Kansas: Kansas City project geography and proposal status need verification.
+- Kansas City area, Kansas: Bank expansion/business strategy; no verified construction gap.
+- Kansas City area, Missouri: Proposal/objections; current construction status not verified.
+- Kauai, Hawaii: Limited to supplied title/date; full report not independently read.
+- Kentucky: Limited to supplied title/date; full report not independently read.
+- Kiamichi Country, Oklahoma: Texas railroad funding article assigned to Oklahoma.
+- Lake Superior region, Wisconsin: Allegations/permit dispute; full report and official status need verification.
+- Lakes Region, New Hampshire: Fatal accident; no supported facility-gap or rental connection.
+- Las Vegas Valley, Nevada: Limited to supplied title/date; full report not independently read.
+- Lincoln and Omaha corridor, Nebraska: Limited to supplied title/date; full report not independently read.
+- Litchfield Hills, Connecticut: Limited to supplied title/date; full report not independently read.
+- Los Angeles Basin, California: Limited to supplied title/date; full report not independently read.
+- Louisiana: Limited to supplied title/date; full report not independently read.
+- Lowcountry, South Carolina: Limited to supplied title/date; full report not independently read.
+- Madison area, Wisconsin: Apprenticeship enrollment; no project-specific case.
+- Maine: Limited to supplied title/date; full report not independently read.
+- Massachusetts: Limited to supplied title/date; full report not independently read.
+- Maui County, Hawaii: Workforce program; no construction or facility interruption.
+- Merrimack Valley, New Hampshire: Statewide priority list; specific project need unverified.
+- Metro Atlanta, Georgia: Limited to supplied title/date; full report not independently read.
+- Metro Valley, West Virginia: Remote-worker relocation program; unrelated construction case.
+- Michigan: Limited to supplied title/date; full report not independently read.
+- Mid Michigan, Michigan: Limited to supplied title/date; full report not independently read.
+- Midcoast, Maine: Limited to supplied title/date; full report not independently read.
+- Middle Tennessee, Tennessee: Limited to supplied title/date; full report not independently read.
+- Midlands, South Carolina: Limited to supplied title/date; full report not independently read.
+- Milwaukee and Southeast, Wisconsin: Limited to supplied title/date; full report not independently read.
+- Minnesota: Industry outlook; individual sites and operational gaps unverified.
+- Missouri: Limited to supplied title/date; full report not independently read.
+- Missouri River Country, Montana: Journey/editorial article; unrelated to construction facilities.
+- Montana: Limited to supplied title/date; full report not independently read.
+- Mountaineer Country, West Virginia: Tourism trail; unrelated case source.
+- Mountains, North Carolina: Professional group feature; no project-specific case.
+- Nevada: Limited to supplied title/date; full report not independently read.
+- New Hampshire: Limited to supplied title/date; full report not independently read.
+- New Jersey: Limited to supplied title/date; full report not independently read.
+- New Mexico: Limited to supplied title/date; full report not independently read.
+- New River Greenbrier Valley, West Virginia: Limited to supplied title/date; full report not independently read.
+- New York: Limited to supplied title/date; full report not independently read.
+- New York City and Long Island, New York: Old site-search proposal; not current construction.
+- Newport County, Rhode Island: Limited to supplied title/date; full report not independently read.
+- North Carolina: Limited to supplied title/date; full report not independently read.
+- North Central Kansas, Kansas: Limited to supplied title/date; full report not independently read.
+- North Central New Mexico, New Mexico: Road-junction locality/current status need verification; no Santa Fe incident claimed.
+- North Central North Dakota, North Dakota: Limited to supplied title/date; full report not independently read.
+- North Coast, California: Leucadia/San Diego article assigned to Northern California North Coast.
+- North Country, New York: Historical architecture award; no active interruption.
+- North Dakota: Limited to supplied title/date; full report not independently read.
+- North Florida, Florida: Limited to supplied title/date; full report not independently read.
+- North Georgia, Georgia: Limited to supplied title/date; full report not independently read.
+- North Idaho, Idaho: Broad update; named project details require source review.
+- North Louisiana, Louisiana: Limited to supplied title/date; full report not independently read.
+- North Shore, Massachusetts: Custom-home marketing; unsuitable commercial/institutional case.
+- North Texas, Texas: Limited to supplied title/date; full report not independently read.
+- Northeast Iowa, Iowa: Limited to supplied title/date; full report not independently read.
+- Northeast Kingdom, Vermont: Limited to supplied title/date; full report not independently read.
+- Northeast Minnesota, Minnesota: Demographic article; no construction or rental case.
+- Northeast Nebraska, Nebraska: Wahoo project; Northeast Nebraska assignment requires better local source.
+- Northeast New Mexico, New Mexico: Limited to supplied title/date; full report not independently read.
+- Northeast Ohio, Ohio: Limited to supplied title/date; full report not independently read.
+- Northeast Pennsylvania, Pennsylvania: Limited to supplied title/date; full report not independently read.
+- Northeast Wyoming, Wyoming: Laramie/Southeast Wyoming article assigned to Northeast Wyoming.
+- Northern Arizona, Arizona: Limited to supplied title/date; full report not independently read.
+- Northern Delaware, Delaware: Residential legal dispute; no supported amenities interruption.
+- Northern Illinois, Illinois: Limited to supplied title/date; full report not independently read.
+- Northern Indiana, Indiana: Prospective stadium deal; no construction/site need established.
+- Northern Lower Peninsula, Michigan: Limited to supplied title/date; full report not independently read.
+- Northern Nevada, Nevada: Limited to supplied title/date; full report not independently read.
+- Northern Panhandle, West Virginia: Limited to supplied title/date; full report not independently read.
+- Northern Utah, Utah: Proposal nearing approval; exact site/current status unverified.
+- Northern Virginia, Virginia: DFW, Texas article assigned to Northern Virginia.
+- Northwest Iowa, Iowa: Limited to supplied title/date; full report not independently read.
+- Northwest Minnesota, Minnesota: Industry profile; no specific incident.
+- Northwest Missouri, Missouri: Limited to supplied title/date; full report not independently read.
+- Northwest Ohio, Ohio: Fitness program; unrelated to construction amenities.
+- Northwest Oklahoma, Oklahoma: Oklahoma City article assigned to Northwest Oklahoma.
+- Northwest Wyoming, Wyoming: Statewide budget story; no named local project.
+- Northwoods, Wisconsin: Environmental incident; full report/response details unverified.
+- Oahu, Hawaii: Limited to supplied title/date; full report not independently read.
+- Ohio: Limited to supplied title/date; full report not independently read.
+- Oklahoma: Limited to supplied title/date; full report not independently read.
+- Olympic Peninsula, Washington: Post-project environmental study; no active construction case.
+- Oregon: Limited to supplied title/date; full report not independently read.
+- Oregon Coast, Oregon: Limited to supplied title/date; full report not independently read.
+- Outer Banks, North Carolina: Academic action plan; no construction incident.
+- Ozarks, Arkansas: Mixed roundup; no verified Fayetteville amenities case.
+- Ozarks, Missouri: Limited to supplied title/date; full report not independently read.
+- Panhandle, Florida: Planning/project overview; specific operational case unverified.
+- Panhandle, Nebraska: Exact Sentinel project locality not verified.
+- Panhandle, Oklahoma: Limited to supplied title/date; full report not independently read.
+- Panhandle, Texas: National construction-starts article; local project connection unverified.
+- Pee Dee, South Carolina: Future project/tribal concerns; current authorization unverified.
+- Pennsylvania: Limited to supplied title/date; full report not independently read.
+- Pennsylvania Wilds, Pennsylvania: Limited to supplied title/date; full report not independently read.
+- Philadelphia and Southeast, Pennsylvania: Limited to supplied title/date; full report not independently read.
+- Phoenix area, Arizona: Limited to supplied title/date; full report not independently read.
+- Piedmont Triad, North Carolina: Limited to supplied title/date; full report not independently read.
+- Pine Belt, Mississippi: Historical funding investigation; no verified contractor-facility gap.
+- Pittsburgh and Southwest, Pennsylvania: Recreational trail guide; unrelated case.
+- Providence area, Rhode Island: Limited to supplied title/date; full report not independently read.
+- Puget Sound, Washington: Ecological restoration study; no contractor amenities case.
+- Red River Valley, North Dakota: Limited to supplied title/date; full report not independently read.
+- Reno Tahoe, Nevada: Limited to supplied title/date; full report not independently read.
+- Research Triangle, North Carolina: Limited to supplied title/date; full report not independently read.
+- Rhode Island: Limited to supplied title/date; full report not independently read.
+- River Parishes, Louisiana: Heritage property acquisition; no construction/amenities case.
+- San Diego, California: Limited to supplied title/date; full report not independently read.
+- San Luis Valley, Colorado: Limited to supplied title/date; full report not independently read.
+- Sandhills, Nebraska: Legal/permit challenge; current construction status unverified.
+- Seacoast, New Hampshire: Portland, Maine housing article assigned to New Hampshire Seacoast.
+- Shenandoah Valley, Virginia: Chesapeake Bay/coastal terminal article assigned to Shenandoah Valley.
+- Shore Region, New Jersey: Two Harbors, Minnesota article assigned to New Jersey Shore.
+- Skylands, New Jersey: Disputed development; permissions/current status need verification.
+- South Carolina: Policy implications/current permissions require full-source review.
+- South Central Kansas, Kansas: Limited to supplied title/date; full report not independently read.
+- South Central Kentucky, Kentucky: Limited to supplied title/date; full report not independently read.
+- South Central North Dakota, North Dakota: Historical protest settlement; no current construction case.
+- South County, Rhode Island: Sculpture feature; weak/unrelated mancamp case.
+- South Dakota: Multi-project roundup; individual details unverified.
+- South Florida, Florida: Limited to supplied title/date; full report not independently read.
+- South Georgia, Georgia: Fact sheet/full source unread; Valdosta locality not established.
+- South Shore and Cape Cod, Massachusetts: Limited to supplied title/date; full report not independently read.
+- South Texas, Texas: Enforcement allegations; no supported facility-gap connection.
+- Southcentral, Alaska: Limited to supplied title/date; full report not independently read.
+- Southeast Kansas, Kansas: Educational/economic-development tour; no construction case.
+- Southeast Michigan, Michigan: Material-product announcement; no named construction gap.
+- Southeast Missouri, Missouri: Historical statewide roundup; individual local details unverified.
+- Southeast Montana, Montana: Proposed development; current approvals and work stage unverified.
+- Southeast New Mexico, New Mexico: Regional forecast; no named Roswell project.
+- Southeast Ohio, Ohio: Leadership appointment; unrelated construction case.
+- Southeast South Dakota, South Dakota: Proposed pipeline/cost estimate; construction not established.
+- Southeast Wyoming, Wyoming: Market forecast; no specific incident.
+- Southeast, Alaska: Limited to supplied title/date; full report not independently read.
+- Southeastern Utah, Utah: Exact corridor locality unverified; opening is not ongoing construction.
+- Southern Arizona, Arizona: Proposed conversion/protests; current work permissions unverified.
+- Southern Coalfields, West Virginia: Funding overview; no specific operational rental case.
+- Southern Coast, Maine: Albania article assigned to Southern Coast, Maine; country mismatch.
+- Southern Illinois, Illinois: Limited to supplied title/date; full report not independently read.
+- Southern Indiana, Indiana: Limited to supplied title/date; full report not independently read.
+- Southern Iowa, Iowa: Limited to supplied title/date; full report not independently read.
+- Southern Maryland, Maryland: Limited to supplied title/date; full report not independently read.
+- Southern Minnesota, Minnesota: Limited to supplied title/date; full report not independently read.
+- Southern Nevada, Nevada: Historical Las Vegas roundup; Mesquite-specific case not established.
+- Southern Oregon, Oregon: Limited to supplied title/date; full report not independently read.
+- Southern Shore, New Jersey: Limited to supplied title/date; full report not independently read.
+- Southern Vermont, Vermont: Limited to supplied title/date; full report not independently read.
+- Southwest Arkansas, Arkansas: Limited to supplied title/date; full report not independently read.
+- Southwest Idaho, Idaho: Limited to supplied title/date; full report not independently read.
+- Southwest New Mexico, New Mexico: Public listening session; construction/amenities gap not established.
+- Southwest Ohio, Ohio: Limited to supplied title/date; full report not independently read.
+- Southwest Oklahoma, Oklahoma: Limited to supplied title/date; full report not independently read.
+- Southwest Virginia, Virginia: Tax-policy debate; no project-specific case.
+- Southwest Washington, Washington: Labor-policy roundup; no construction amenities case.
+- Southwest Wyoming, Wyoming: Limited to supplied title/date; full report not independently read.
+- Southwest, Alaska: Limited to supplied title/date; full report not independently read.
+- Southwestern Utah, Utah: Energy deal/analysis; exact project locality and crew needs unverified.
+- St. Louis area, Missouri: Limited to supplied title/date; full report not independently read.
+- Tennessee: Limited to supplied title/date; full report not independently read.
+- Texas: Limited to supplied title/date; full report not independently read.
+- Twin Cities, Minnesota: Limited to supplied title/date; full report not independently read.
+- Upper Peninsula, Michigan: Support coalition; no construction/amenities gap established.
+- Upstate, South Carolina: Limited to supplied title/date; full report not independently read.
+- Utah: Planned public-land development; authorization/current status unverified.
+- Vermont: Limited to supplied title/date; full report not independently read.
+- Virginia: Limited to supplied title/date; full report not independently read.
+- Wasatch Front, Utah: Limited to supplied title/date; full report not independently read.
+- Washington: Washington, DC article assigned to Washington state.
+- West Michigan, Michigan: Company expansion; no specific construction-facility gap.
+- West Tennessee, Tennessee: Industry forecast/charging statistics; no named local incident.
+- West Texas, Texas: Company expansion event; no contractor-facility case.
+- West Virginia: Limited to supplied title/date; full report not independently read.
+- Western Coalfields, Kentucky: Northeastern Kentucky acquisition article assigned to Western Coalfields.
+- Western Kansas, Kansas: Possible development/water analysis; construction not established.
+- Western Lakes and Mountains, Maine: Eastport coastal proposal assigned to Western Lakes and Mountains.
+- Western Maryland, Maryland: Stop order; subsequent authorization/current work stage unverified.
+- Western New York, New York: Career event; no construction-facility case.
+- Western North Dakota, North Dakota: Stalled project; exact locality and operational need unverified.
+- Western Slope, Colorado: Historical seismic report; no supported construction/amenities connection.
+- White Mountains, New Hampshire: Land-policy/proposed development article; site permissions unverified.
+- Willamette Valley, Oregon: Worldwide historical roundup; local project not established.
+- Wisconsin: Limited to supplied title/date; full report not independently read.
+- Wyoming: Paused development; current restart/authorization unverified.
+- Yellowstone Country, Montana: Uncorroborated Facebook development claim; authoritative source required.
+
+### Additional contextual source flags
+
+- Bluegrass region, Kentucky: UKNow's retrieved Town Branch Commons story reports research on an existing park, not an active construction interruption.
+- Central Delaware, Delaware: Aternium's retrieved August 2026 announcement describes a proposed site and expected later property closing; the stored “opens” headline is not used to claim an operating plant.
+
+### 2026-10-12 production deployment verification
+
+- `npm run build` passed locally: generated 347 canonical sitemap routes, built 1,591 modules, and generated 379 direct route shells. The existing large-client-chunk warning remains.
+- Production deploy command: `npx vercel@latest --prod --scope temporary-124 --yes` from the approved working tree. Vercel deployment `dpl_AR2yRDDntCPiGBD8vBd7yehSdgEP` reached `READY` with target `production`, build duration 36 seconds, and post-build duration 14 seconds.
+- Production aliases reported by Vercel: `https://oil-field-equipment-rentals.com`, `https://oil-field-equipment-rentalscom.vercel.app`, and `https://oil-field-equipment-rentalscom-temporary-124.vercel.app`. Deployment protection remains enabled.
+- Direct protected fetch of `https://oil-field-equipment-rentals-n1p9gpkza-temporary-124.vercel.app/service-areas/new-mexico/albuquerque/` returned the application shell. Its served JavaScript bundle contains the updated Albuquerque coverage text (`Los Ranchos de Albuquerque, Corrales, and Rio Rancho`) and the UNM case-study title.
+- Fetching the custom domain route returned the existing Cloudflare “Just a moment” challenge rather than page HTML. Public custom-domain rendering is therefore unverified; this is consistent with the prior DNS/Cloudflare boundary and does not indicate a failed Vercel deployment.
+- `vercel logs https://oil-field-equipment-rentals-n1p9gpkza-temporary-124.vercel.app --level error --since 1h --scope temporary-124` returned no error entries.
+- Vercel emitted the existing non-blocking TypeScript diagnostics from legacy `api/` and `server/` files during the deployment build; the deployment still completed `READY`. No form submission or end-to-end backend test was performed.
