@@ -1,5 +1,13 @@
 # TemporaryKitchenRental Test Results
 
+## 2026-10-13 — Birmingham service-area content refinement
+
+- Source mapping — PASS: the `Central Alabama, Alabama` record is the location-content source used by the Birmingham service-area page; no route, pricing, inventory, image, or placeholder fields were changed.
+- Editorial safety — PASS: the updated subtitle and incident analysis identify the hospital acquisition as reported context, explicitly state that construction, renovation, closures, and a temporary-facility requirement are not confirmed, and frame future mancamp needs as a possible planning scenario.
+- JSON validation — PASS: all 296 location records parse successfully; the updated record contains the required conditional wording and existing `[PHONE]`/`[STARTING PRICE]` tokens for render-time replacement.
+- Build — PASS: `npm run build` generated 347 sitemap URLs and 379 direct route shells; existing large-client-chunk warning remains. `git diff --check` passed.
+- Browser/deployment — PENDING: local Chromium is not installed for automated browser verification, and this content change has not yet been deployed.
+
 ## 2026-10-13 — Nationwide coverage copy refinement
 
 - Scope — PASS: one shared `nationwideCoverageDescription` is rendered by the CoverageMap used on both `/` and `/service-areas/`; map state selection, directory links, modal behavior, and routes were not changed.

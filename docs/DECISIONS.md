@@ -1,5 +1,11 @@
 # TemporaryKitchenRental Decision Log
 
+## 2026-10-13 — Use conditional project language for unconfirmed Birmingham work
+
+- Treat the Birmingham source as an ownership/acquisition report, not evidence of active construction, renovation, closure, or a current rental need.
+- Explain possible future mancamp requirements only as a conditional scenario if a later phase creates a gap in meals, showers, restrooms, laundry, or overnight accommodation.
+- Keep the copy practical and site-specific by asking for affected facilities, workforce, access restrictions, project dates, approved placement, utilities, and servicing rather than implying the cited hospitals used company equipment.
+
 ## 2026-10-13 — Consolidate nationwide coverage copy
 
 - Use one shared coverage description for the homepage and Service Areas page because both render the same `CoverageMap` component. This prevents the two entry points from drifting.
