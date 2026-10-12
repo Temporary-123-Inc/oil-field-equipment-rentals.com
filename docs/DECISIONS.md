@@ -1,8 +1,8 @@
 # TemporaryKitchenRental Decision Log
 
-## 2026-10-13 — Use conditional project language for unconfirmed Birmingham work
+## 2026-10-13 — Use conditional project language for unconfirmed service-area work
 
-- Treat the Birmingham source as an ownership/acquisition report, not evidence of active construction, renovation, closure, or a current rental need.
+- Treat source reports as context, not evidence of active construction, renovation, closure, or a current rental need unless the source actually establishes that status. Apply the same rule to state and regional/city pages.
 - Explain possible future mancamp requirements only as a conditional scenario if a later phase creates a gap in meals, showers, restrooms, laundry, or overnight accommodation.
 - Keep the copy practical and site-specific by asking for affected facilities, workforce, access restrictions, project dates, approved placement, utilities, and servicing rather than implying the cited hospitals used company equipment.
 
